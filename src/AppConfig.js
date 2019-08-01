@@ -3,9 +3,14 @@ export default {
 
   defaultLocale: 'fr',
 
+  drawerWidth: 130,
+  contentWidth: 1290,
+
   routePaths: {
     landingPage: '/',
     homepage: '/app',
-    login: '/login'
+    login: '/login',
+    signup: '/signup',
+    passwordReset: '/password-reset',
   },
 };

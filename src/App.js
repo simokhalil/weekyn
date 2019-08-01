@@ -1,76 +1,38 @@
 import React from 'react';
-import moment from 'moment';
-import { I18n } from 'react-polyglot';
-import { Provider } from 'react-redux';
-import {
-  Route,
-  BrowserRouter as Router,
-  Switch,
-} from 'react-router-dom';
-import blue from '@material-ui/core/colors/blue';
-import deepOrange from '@material-ui/core/colors/deepOrange';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { Route, Switch, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import AppConfig from './AppConfig';
-import Homepage from './pages/homepage/Homepage';
+import AppContainer from './components/containers/AppContainer';
+// import AuthenticatedRoute from './components/auth/AuthenticatedRoute';
 import LandingPage from './pages/landing-page/LandingPage';
-import MessagesEnglish from './i18n/en';
-import MessagesFrench from './i18n/fr';
-import { getBrowserLanguage } from './utils/browser';
-import { history, store } from './redux/store';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-    secondary: deepOrange,
-  },
-  typography: {
-    // Use the system font instead of the default Roboto font.
-    fontSize: 16,
-    fontFamily: [
-      'Raleway',
-      'Open Sans',
-      'Roboto',
-      'Helvetica Neue',
-      'sans-serif',
-    ].join(','),
-  },
-});
+import LoginPage from './pages/auth/LoginPage';
+import SignupPage from 'pages/auth/SignupPage';
 
 if (AppConfig.debug === 'false') {
   console.log = () => { };
 }
 
-const locale = getBrowserLanguage();
-console.log('App locale : ', locale);
-moment.locale(locale);
+class App extends React.Component {
 
-let messages = null;
+  render() {
+    return (
 
-switch (locale) {
-  case 'fr':
-    messages = MessagesFrench;
-    break;
-  default:
-    messages = MessagesEnglish;
-    break;
+      <Switch>
+        <Route path={AppConfig.routePaths.landingPage} exact component={LandingPage} />
+        <Route path={AppConfig.routePaths.login} exact component={LoginPage} />
+        <Route path={AppConfig.routePaths.signup} exact component={SignupPage} />
+        <Route path={AppConfig.routePaths.homepage} component={AppContainer} fallbackComponent={LoginPage} />
+      </Switch>
+
+    );
+  }
 }
 
-function App() {
-  return (
-    <Provider store={store} history={history}>
-      <I18n locale={locale} messages={messages}>
-        <MuiThemeProvider theme={theme}>
-          <Router onUpdate={() => window.scrollTo(0, 0)}>
-            <Switch>
-              <Route path={AppConfig.routePaths.landingPage} exact component={LandingPage} />
-              <Route path={AppConfig.routePaths.homepage} exact component={Homepage} />
-            </Switch>
-          </Router>
-        </MuiThemeProvider>
-      </I18n>
-    </Provider>
-  );
-}
+const mapStateToProps = (state) => ({
+  authUser: state.authUser || [],
+});
 
-export default App;
+export default connect(mapStateToProps)(
+  withRouter(App)
+);

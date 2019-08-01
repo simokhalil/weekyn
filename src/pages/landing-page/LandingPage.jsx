@@ -10,7 +10,7 @@ const LandingPage = ({ t }) => {
     <>
       <div>Landing page</div>
 
-      <Link to={AppConfig.routePaths.homepage}>{t('hello')}</Link>
+      <Link to={AppConfig.routePaths.login}>{t('hello')}</Link>
     </>
   );
 }
