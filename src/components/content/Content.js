@@ -30,8 +30,8 @@ const styles = theme => ({
   },
 });
 
-const Content = ({children, classes, fullWidth, smallWidth}) => (
-  <div className={classes.content}>
+const Content = ({children, classes, fullWidth, smallWidth, style}) => (
+  <div className={classes.content} style={style}>
     <div className={classNames(classes.container, { [classes.fullWidth]: fullWidth, [classes.smallWidth]: smallWidth })}>
       {children}
     </div>
@@ -43,11 +43,13 @@ Content.propTypes = {
   classes: PropTypes.any.isRequired,
   fullWidth: PropTypes.bool,
   smallWidth: PropTypes.bool,
+  style: PropTypes.object,
 };
 
 Content.defaultProps = {
   fullWidth: false,
   smallWidth: false,
+  style: {},
 };
 
 export default withStyles(styles)(Content);

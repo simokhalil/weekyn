@@ -1,7 +1,7 @@
 import { eventChannel } from 'redux-saga';
 import { call, cancelled, put, take, takeLatest } from 'redux-saga/effects';
 
-import { firebase } from '../../firebase/';
+import { clientsDB, firebase } from '../../firebase/';
 import { store } from '../store';
 
 function subscribeToClients(userId) {
@@ -48,8 +48,24 @@ export function* getClientsSaga(action) {
   }
 }
 
+export function* createClientSaga(action) {
+  const { client } = action.payload;
+
+  const state = store.getState();
+  const currentUser = state.users.authUser;
+
+  try {
+    yield call(clientsDB.addClient(currentUser.uid, client));
+
+    yield put({ type: 'CREATE_CLIENT_SUCCESS' });
+  } catch (error) {
+    yield put({ type: 'CREATE_CLIENT_ERROR' });
+  }
+}
+
 function* watch() {
   yield takeLatest('FETCH_CLIENTS', getClientsSaga);
+  yield takeLatest('CREATE_CLIENT', createClientSaga);
 }
 
 export default watch;

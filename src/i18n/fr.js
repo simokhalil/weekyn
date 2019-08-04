@@ -8,6 +8,7 @@ export default {
     validate: 'Valider',
     ok: 'Ok',
     createdAt: 'Créé le',
+    noDataToShow: 'Aucune donnée à afficher',
   },
 
   menus: {
@@ -41,7 +42,20 @@ export default {
     login: 'Vous avez déjà un compte ? Connexion',
   },
 
+  dashboard: {
+    description: 'Description de la section Dashboard',
+  },
+
   clients: {
+    identity: 'Identité',
+    contact: 'Contact',
+    name: 'Nom du client',
+    email: 'Email',
+    phone: 'Phone',
+    address: 'Adresse',
+    postalCode: 'Code postal',
+    city: 'Ville',
+    country: 'Pays',
     deleteConfirmationTitle: 'Voulez-vous vraiment supprimer ce client ?',
     deleteConfirmationText: 'Vous êtes sur le point de supprimer un client. Cette opération est irrévocable. Êtes-vous sûr(e) de vouloir continuer ?'
   }
