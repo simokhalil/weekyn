@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 
 import { withStyles } from '@material-ui/core';
 
@@ -7,11 +6,7 @@ import ContentToolbar from 'components/content/ContentToolbar';
 import Content from 'components/content/Content';
 import NoContentCard from 'components/content/NoContentCard';
 
-// import 'moment/locale/fr';
 import './Homepage.scss';
-
-// moment.locale('fr');
-const cellWidth = '40px';
 
 const styles = theme => ({
   root: {

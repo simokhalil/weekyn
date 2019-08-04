@@ -1,8 +1,8 @@
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
+// import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import AddIcon from '@material-ui/icons/Add';
 import CheckIcon from '@material-ui/icons/Check';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import DeleteIcon from '@material-ui/icons/DeleteOutline';
+// import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import SettingsIcon from '@material-ui/icons/Settings';
 import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan';
