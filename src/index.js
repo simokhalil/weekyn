@@ -7,7 +7,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
-import deepOrange from '@material-ui/core/colors/deepOrange';
 
 import App from './App';
 import MessagesEnglish from './i18n/en';
@@ -21,11 +20,11 @@ import './stylesheets/global.scss';
 const theme = createMuiTheme({
   palette: {
     primary: blue,
-    secondary: deepOrange,
+    secondary: { main: '#00c386' },
   },
   typography: {
     // Use the system font instead of the default Roboto font.
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: [
       'Raleway',
       'Open Sans',
