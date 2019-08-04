@@ -15,6 +15,7 @@ import * as serviceWorker from './serviceWorker';
 import { getBrowserLanguage } from './utils/browser';
 import { history, store } from './redux/store';
 
+import 'moment/locale/fr';
 import './stylesheets/global.scss';
 
 const theme = createMuiTheme({

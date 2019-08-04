@@ -30,13 +30,13 @@ export default [
   {
     id: 'clients',
     icon: SubjectIcon,
-    path: AppConfig.routePaths.homepage,
+    path: AppConfig.routePaths.clients,
     items: [],
   },
   {
     id: 'timings',
     icon: SubjectIcon,
-    path: AppConfig.routePaths.homepage,
+    path: AppConfig.routePaths.activity,
     items: [],
   },
   {
@@ -48,33 +48,18 @@ export default [
 ];
 
 export const subMenuItems = {
-  offers: [
+  clients: [
     {
       type: 'item',
-      text: 'offers.addJob',
-      path: AppConfig.routePaths.addOffer,
+      text: 'clients.active',
+      path: AppConfig.routePaths.clients,
       icon: AddIcon,
     }, {
       type: 'item',
-      text: 'offers.active',
-      path: AppConfig.routePaths.offers,
+      text: 'clients.archived',
+      path: AppConfig.routePaths.clientsArchived,
       icon: CheckIcon,
-    }, {
-      type: 'item',
-      text: 'offers.draft',
-      path: AppConfig.routePaths.draftOffers,
-      icon: AccountBoxIcon,
-    }, {
-      type: 'item',
-      text: 'offers.archived',
-      path: AppConfig.routePaths.deletedOffers,
-      icon: DeleteIcon,
-    }, /* {
-        type: 'item',
-        text: 'Rechercher une offre',
-        path: '/positions/search',
-        icon: SearchIcon,
-      }, */
+    },
   ],
   sourcing: [
     {

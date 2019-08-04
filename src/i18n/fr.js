@@ -1,11 +1,27 @@
 export default {
   hello: 'Bonjour',
 
+  common: {
+    cancel: 'Annuler',
+    confirm: 'Je confirme',
+    save: 'Enregistrer',
+    validate: 'Valider',
+    ok: 'Ok',
+    createdAt: 'Créé le',
+  },
+
   menus: {
     dashboard: 'Accueil',
     clients: 'Clients',
     timings: 'Mon CRA',
     settings: 'Paramètres',
+  },
+
+  submenus: {
+    clients: {
+      active: 'Actifs',
+      archived: 'Archivés',
+    },
   },
 
   login: {
@@ -24,4 +40,9 @@ export default {
     name: 'Nom',
     login: 'Vous avez déjà un compte ? Connexion',
   },
+
+  clients: {
+    deleteConfirmationTitle: 'Voulez-vous vraiment supprimer ce client ?',
+    deleteConfirmationText: 'Vous êtes sur le point de supprimer un client. Cette opération est irrévocable. Êtes-vous sûr(e) de vouloir continuer ?'
+  }
 };

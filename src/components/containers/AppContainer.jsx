@@ -11,7 +11,11 @@ import NotFoundPage from '../../pages/errors/NotFoundPage';
 import SideMenu from '../layout/sidebar/Sidebar';
 import { db, firebase } from '../../firebase';
 
+import ActivityReportPage from 'pages/activity-report/ActivityReportPage';
+import ClientsPage from 'pages/clients/ClientsPage';
 import Homepage from 'pages/homepage/Homepage';
+import ClientAddPage from 'pages/clients/ClientAddPage';
+import ClientsListPage from 'pages/clients/ClientsListPage';
 
 const styles = theme => {
   console.log(theme.palette);
@@ -35,7 +39,8 @@ const styles = theme => {
       marginTop: '60px',
       display: 'flex',
       flexDirection: 'column',
-      overflow: 'scroll',
+      overflowY: 'scroll',
+      padding: '20px',
     },
   });
 };
@@ -168,6 +173,9 @@ class AppContainer extends React.Component {
 
             <Switch>
               <Route path={AppConfig.routePaths.homepage} exact component={Homepage} />
+              <Route path={AppConfig.routePaths.clientAdd} exact component={ClientAddPage} />
+              <Route path={AppConfig.routePaths.clients} component={ClientsListPage} />
+              <Route path={AppConfig.routePaths.activity} exact component={ActivityReportPage} />
 
               <Route path="**" component={NotFoundPage} />
             </Switch>

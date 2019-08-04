@@ -1,16 +1,45 @@
 import React from 'react';
+import moment from 'moment';
 
+import { withStyles } from '@material-ui/core';
+
+import ContentToolbar from 'components/content/ContentToolbar';
+import Content from 'components/content/Content';
+import NoContentCard from 'components/content/NoContentCard';
+
+// import 'moment/locale/fr';
 import './Homepage.scss';
 
-const Homepage = () => {
+// moment.locale('fr');
+const cellWidth = '40px';
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>Edit <code>src/App.js</code> and save to reload.</p>
-      </header>
-    </div>
-  );
+const styles = theme => ({
+  root: {
+    width: '100%',
+    marginTop: theme.spacing(3),
+    overflowX: 'auto',
+  },
+});
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+class Homepage extends React.Component {
+
+  render() {
+
+    return (
+      <Content fullWidth>
+
+        <ContentToolbar title="Dashboard" />
+
+        <NoContentCard />
+
+      </Content>
+    );
+  }
 }
 
-export default Homepage;
+export default withStyles(styles)(
+  Homepage,
+);

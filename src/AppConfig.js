@@ -8,9 +8,13 @@ export default {
 
   routePaths: {
     landingPage: '/',
-    homepage: '/app',
     login: '/login',
     signup: '/signup',
     passwordReset: '/password-reset',
+    homepage: '/app',
+    clients: '/app/clients',
+    clientsArchived: '/app/clients/archived',
+    clientAdd: '/app/clients/add',
+    activity: '/app/activity',
   },
 };
