@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 
-import { withStyles } from '@material-ui/core';
+import {
+  withStyles,
+} from '@material-ui/core';
 
 import AppConfig from 'AppConfig';
 import Button from 'components/form/Button';
@@ -12,7 +14,6 @@ import Content from 'components/content/Content';
 import ContentToolbar from 'components/content/ContentToolbar';
 import * as clientsActions from '../../redux/actions/clients';
 import ConfirmationDialog from 'components/content/ConfirmationDialog';
-import { clientsDB } from '../../firebase';
 
 const styles = {
   actionBar: {
@@ -32,7 +33,7 @@ class ClientsListPage extends Component {
 
     console.log('list', this.props);
 
-    getClients();
+    getClients(false);
   }
 
   gotoAddClient = () => {
@@ -41,10 +42,9 @@ class ClientsListPage extends Component {
   };
 
   onDeleteClient = async (clientId) => {
+    const { deleteClient } = this.props;
 
-    const { currentUser } = this.props;
-
-    await clientsDB.archiveClient(currentUser.uid, clientId);
+    deleteClient(clientId);
   };
 
   openConfirmationDialog = () => this.setState({ isDeleteConfirmationDialogOpen: true });
@@ -62,7 +62,7 @@ class ClientsListPage extends Component {
           <Button
             variant="contained"
             color="secondary"
-            size="large"
+            size="small"
             onClick={this.gotoAddClient}
           >
             Ajouter un client
@@ -70,7 +70,7 @@ class ClientsListPage extends Component {
         </div>
 
         <div>
-          <ClientsList clients={clients} onDeleteClient={this.onDeleteClient} deleteType="archive" />
+          <ClientsList clients={clients} onDeleteClient={this.onDeleteClient} />
         </div>
 
         <ConfirmationDialog
@@ -86,8 +86,8 @@ class ClientsListPage extends Component {
 }
 
 ClientsListPage.propTypes = {
-  currentUser: PropTypes.object.isRequired,
   clients: PropTypes.array,
+  deleteClient: PropTypes.func.isRequired,
 };
 
 ClientsListPage.defaultProps = {
@@ -95,7 +95,6 @@ ClientsListPage.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  currentUser: state.users.authUser,
   clients: state.clients.clients,
 });
 

@@ -4,6 +4,7 @@ export default {
   common: {
     cancel: 'Annuler',
     confirm: 'Je confirme',
+    edit: 'Modifier',
     save: 'Enregistrer',
     validate: 'Valider',
     ok: 'Ok',

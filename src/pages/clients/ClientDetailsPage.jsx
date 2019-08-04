@@ -3,16 +3,19 @@ import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 
 import {
+  Avatar,
   Card,
   CardHeader,
   CardContent,
   IconButton,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemIcon,
   ListItemText,
   Typography,
   withStyles,
+  Paper,
 } from '@material-ui/core';
 
 import EmailIcon from '@material-ui/icons/EmailOutlined';
@@ -21,13 +24,16 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 import StoreIcon from '@material-ui/icons/StoreOutlined';
 
+import Button from '../../components/form/Button';
 import Content from 'components/content/Content';
 import ContentToolbar from 'components/content/ContentToolbar';
 import * as DateUtils from '../../utils/date';
 import { clientsDB } from '../../firebase';
 
 const styles = {
-
+  title: {
+    marginBottom: '30px',
+  },
 };
 
 class ClientDetailsPage extends Component {
@@ -60,14 +66,25 @@ class ClientDetailsPage extends Component {
 
     return (
       <Content>
-        <ContentToolbar title={client.name} subtitle={`${t('common.createdAt')} ${DateUtils.formatDate(client.createdAt)}`} />
+        <ListItem className={classes.title}>
+          <ListItemAvatar>
+            <Avatar>
+              <StoreIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary={client.name}
+            secondary={`${t('common.createdAt')} ${DateUtils.formatDate(client.createdAt)}`}
+            primaryTypographyProps={{ style: { fontSize: '1.5rem' }}}
+          />
+        </ListItem>
 
-        <Card className={classes.card}>
+        <Paper className={classes.card} elevation={5}>
           <CardHeader
             action={
-              <IconButton aria-label="settings">
-                <MoreVertIcon />
-              </IconButton>
+              <Button variant="contained" color="secondary" size="large">
+                {t('common.edit')}
+              </Button>
             }
             title={t('clients.clientSheet')}
           />
@@ -96,7 +113,7 @@ class ClientDetailsPage extends Component {
               </ListItem>
             </List>
           </CardContent>
-        </Card>
+        </Paper>
       </Content>
     )
   }

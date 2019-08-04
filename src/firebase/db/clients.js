@@ -14,6 +14,7 @@ export const addClient = (userId, client) => {
 
   collection.add({
     ...client,
+    active: true,
     createdAt: now,
     updatedAt: now,
   });
@@ -25,3 +26,22 @@ export const addClient = (userId, client) => {
  * @param {*} clientId
  */
 export const getClient = (userId, clientId) => db.collection('users').doc(userId).collection('clients').doc(clientId).get();
+
+/**
+ * Set client as archived (active = false)
+ * @param {*} userId
+ * @param {*} clientId
+ */
+export const archiveClient = (userId, clientId) => {
+  return db.collection('users').doc(userId).collection('clients').doc(clientId).set({
+    active: false,
+    updatedAt: (new Date()).getTime(),
+  }, { merge: true });
+}
+
+/**
+ * Delete client
+ * @param {*} userId
+ * @param {*} clientId
+ */
+export const deleteClient = (userId, clientId) => db.collection('users').doc(userId).collection('clients').doc(clientId).delete();

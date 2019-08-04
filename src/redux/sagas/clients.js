@@ -4,9 +4,9 @@ import { call, cancelled, put, take, takeLatest } from 'redux-saga/effects';
 import { clientsDB, firebase } from '../../firebase/';
 import { store } from '../store';
 
-function subscribeToClients(userId) {
+function subscribeToClients(userId, active = true) {
   return eventChannel((emmiter) => {
-    firebase.db.collection('users').doc(userId).collection('clients').orderBy('updatedAt', 'desc').onSnapshot(snapshot => {
+    firebase.db.collection('users').doc(userId).collection('clients').where('active', '==', active).orderBy('updatedAt', 'desc').onSnapshot(snapshot => {
       const clients = [];
 
       snapshot.forEach(doc => {
@@ -31,7 +31,7 @@ export function* getClientsSaga(action) {
   const state = store.getState();
   const currentUser = state.users.authUser;
 
-  const channel = yield call(subscribeToClients, currentUser.uid);
+  const channel = yield call(subscribeToClients, currentUser.uid, action.payload.active);
 
   try {
     while (true) {
@@ -63,9 +63,23 @@ export function* createClientSaga(action) {
   }
 }
 
+export function* deleteClientSaga(action) {
+  const state = store.getState();
+  const currentUser = state.users.authUser;
+
+  const { clientId } = action.payload;
+
+  try {
+    yield clientsDB.deleteClient(currentUser.uid, clientId);
+  } catch (error) {
+    yield put({ type: 'DELETE_CLIENT_ERROR' });
+  }
+}
+
 function* watch() {
   yield takeLatest('FETCH_CLIENTS', getClientsSaga);
   yield takeLatest('CREATE_CLIENT', createClientSaga);
+  yield takeLatest('DELETE_CLIENT', deleteClientSaga);
 }
 
 export default watch;

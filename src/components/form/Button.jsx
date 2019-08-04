@@ -7,7 +7,6 @@ import { Button as MuiButton, makeStyles } from '@material-ui/core';
 const useStyles = makeStyles({
   root: {
     textTransform: 'none',
-    fontSize: '0.8rem',
     padding: '6px 15px',
   },
   secondary: {

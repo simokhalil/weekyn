@@ -173,9 +173,8 @@ class AppContainer extends React.Component {
             <Switch>
               <Route path={AppConfig.routePaths.homepage} exact component={Homepage} />
 
-              <Route path={AppConfig.routePaths.clientAdd} exact component={ClientAddPage} />
-              <Route path={AppConfig.routePaths.clientDetails} component={ClientDetailsPage} />
-              <Route path={AppConfig.routePaths.clients} component={ClientsListPage} />
+
+              <Route path={AppConfig.routePaths.clients} component={ClientsPage} />
 
               <Route path={AppConfig.routePaths.activity} exact component={ActivityReportPage} />
 
