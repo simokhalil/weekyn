@@ -15,6 +15,7 @@ export default {
     clients: '/app/clients',
     clientsArchived: '/app/clients/archived',
     clientAdd: '/app/clients/add',
+    clientDetails: '/app/clients/:id',
     activity: '/app/activity',
   },
 };

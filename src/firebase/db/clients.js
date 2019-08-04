@@ -2,6 +2,11 @@ import { db } from '../firebase';
 
 // export const collection = db.collection('clients');
 
+/**
+ * Create new client for given user
+ * @param {*} userId
+ * @param {*} client
+ */
 export const addClient = (userId, client) => {
   const collection = db.collection('users').doc(userId).collection('clients');
 
@@ -13,3 +18,10 @@ export const addClient = (userId, client) => {
     updatedAt: now,
   });
 };
+
+/**
+ * Get client details
+ * @param {*} userId
+ * @param {*} clientId
+ */
+export const getClient = (userId, clientId) => db.collection('users').doc(userId).collection('clients').doc(clientId).get();

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import AppConfig from './AppConfig';
 import AppContainer from './components/containers/AppContainer';
 // import AuthenticatedRoute from './components/auth/AuthenticatedRoute';
+
 import LandingPage from './pages/landing-page/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from 'pages/auth/SignupPage';

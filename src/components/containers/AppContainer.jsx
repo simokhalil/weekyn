@@ -12,6 +12,7 @@ import SideMenu from '../layout/sidebar/Sidebar';
 import { db, firebase } from '../../firebase';
 
 import ActivityReportPage from 'pages/activity-report/ActivityReportPage';
+import ClientDetailsPage from 'pages/clients/ClientDetailsPage';
 import ClientsPage from 'pages/clients/ClientsPage';
 import Homepage from 'pages/homepage/Homepage';
 import ClientAddPage from 'pages/clients/ClientAddPage';
@@ -63,14 +64,12 @@ class AppContainer extends React.Component {
     const { dispatch, history, location } = this.props;
 
     this.userAuthStateChangedUnsubscribe = firebase.auth.onAuthStateChanged((authUser) => {
-      console.log('got authUser : ', authUser);
-
       if (authUser) {
         let infos = {
           email: authUser.email,
           uid: authUser.uid,
           displayName: authUser.displayName,
-          emailVerified: authUser.displayName,
+          emailVerified: authUser.emailVerified,
         }
         this.setState(() => ({ authUser: infos, isLoading: false }));
 
@@ -173,8 +172,11 @@ class AppContainer extends React.Component {
 
             <Switch>
               <Route path={AppConfig.routePaths.homepage} exact component={Homepage} />
+
               <Route path={AppConfig.routePaths.clientAdd} exact component={ClientAddPage} />
+              <Route path={AppConfig.routePaths.clientDetails} component={ClientDetailsPage} />
               <Route path={AppConfig.routePaths.clients} component={ClientsListPage} />
+
               <Route path={AppConfig.routePaths.activity} exact component={ActivityReportPage} />
 
               <Route path="**" component={NotFoundPage} />
