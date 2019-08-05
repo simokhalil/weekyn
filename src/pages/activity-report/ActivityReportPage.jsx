@@ -85,6 +85,7 @@ class ActivityReportPage extends React.Component {
 
     this.state = {
       currentMonth,
+      maxMonthIndex: currentMonthIndex,
       monthLength: currentMonth.daysInMonth(),
       editingIndex: null,
       values: {},
@@ -108,10 +109,15 @@ class ActivityReportPage extends React.Component {
   }
 
   addMonth = async () => {
+    const { maxMonthIndex } = this.state;
     const { getProjectsByYearAndMonth, setCurrentYearAndMonth } = this.props;
     let currentMonth = this.state.currentMonth;
 
     currentMonth = moment(currentMonth.add(1, 'months'));
+
+    if (currentMonth.month() > maxMonthIndex) {
+      return;
+    }
 
     const currentYear = currentMonth.year();
     const currentMonthIndex = currentMonth.month();
@@ -203,7 +209,7 @@ class ActivityReportPage extends React.Component {
   };
 
   render() {
-    const { currentMonth, isProjectsListDialogOpen, monthLength } = this.state;
+    const { currentMonth, maxMonthIndex, isProjectsListDialogOpen, monthLength } = this.state;
     const { classes, currentMonthIndex, currentYear, t, projects, projectLines } = this.props;
 
     const daysArray = [...Array(monthLength).keys()];
@@ -243,7 +249,7 @@ class ActivityReportPage extends React.Component {
 
           <div style={{ width: '150px', textAlign: 'center' }}>{moment(currentMonth).format('MMMM YYYY')}</div>
 
-          <IconButton aria-label="delete" className={classes.margin} onClick={this.addMonth}>
+          <IconButton aria-label="delete" className={classes.margin} onClick={this.addMonth} disabled={currentMonth.month() >= maxMonthIndex}>
             <ChevronRightIcon />
           </IconButton>
         </div>
