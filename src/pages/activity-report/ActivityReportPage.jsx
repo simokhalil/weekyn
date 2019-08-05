@@ -8,7 +8,6 @@ import {
   CardHeader,
   FormControl,
   IconButton,
-  InputLabel,
   MenuItem,
   Select,
   withStyles,
@@ -19,14 +18,12 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 import Button from '../../components/form/Button';
-import ContentToolbar from 'components/content/ContentToolbar';
 import Content from 'components/content/Content';
 import SectionTitle from '../../components/content/SectionTitle';
 import * as ProjectsActions from '../../redux/actions/projects';
 
 import 'moment/locale/fr';
 import ProjectsListDialog from 'components/activity/ProjectsListDialog';
-// import './Homepage.scss';
 
 moment.locale('fr');
 const cellWidth = '40px';
@@ -88,8 +85,6 @@ class ActivityReportPage extends React.Component {
 
     this.state = {
       currentMonth,
-      // currentMonthIndex,
-      // currentYear,
       monthLength: currentMonth.daysInMonth(),
       editingIndex: null,
       values: {},
@@ -106,27 +101,6 @@ class ActivityReportPage extends React.Component {
 
     getProjectsByYearAndMonth();
   }
-
-  /* componentWillReceiveProps(nextProps) {
-    const { currentYear, currentMonthIndex, projectLines } = this.state;
-
-    if (nextProps.projects) {
-      console.log('nextProps projects', nextProps.projects);
-
-      const newProjectLines = nextProps.projects.filter((project => {
-        return (!!project.activity && !!project.activity[currentYear] && !!project.activity[currentYear][currentMonthIndex]);
-      }));
-
-      console.log('filtered projects', projectLines);
-
-      this.setState({
-        projectLines: [
-          ...projectLines,
-          ...newProjectLines,
-        ],
-      });
-    }
-  } */
 
   getDayName = (day) => {
     const { currentMonth } = this.state;
