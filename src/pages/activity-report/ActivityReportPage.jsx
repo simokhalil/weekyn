@@ -178,6 +178,15 @@ class ActivityReportPage extends React.Component {
   addProjectLine = (project) => {
     const { addProjectLine } = this.props;
     addProjectLine(project);
+    this.closeProjectsListDialog();
+  };
+
+  getFilteredProjectsList = () => {
+    const { projects, projectLines } = this.props;
+
+    return projects.filter((project) => {
+      return projectLines.findIndex((projectLine) => projectLine.id === project.id) === -1;
+    });
   };
 
   setDayActivity = (projectIndex, dayIndex, value) => {
@@ -307,7 +316,7 @@ class ActivityReportPage extends React.Component {
           </tbody>
         </table>
 
-        <ProjectsListDialog projects={projects} isOpen={isProjectsListDialogOpen} onClose={this.closeProjectsListDialog} onSelect={this.addProjectLine} />
+        <ProjectsListDialog projects={this.getFilteredProjectsList()} isOpen={isProjectsListDialogOpen} onClose={this.closeProjectsListDialog} onSelect={this.addProjectLine} />
 
       </Content>
     );
