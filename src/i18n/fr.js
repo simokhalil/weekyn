@@ -60,5 +60,7 @@ export default {
     deleteConfirmationTitle: 'Voulez-vous vraiment supprimer ce client ?',
     deleteConfirmationText: 'Vous êtes sur le point de supprimer un client. Cette opération est irrévocable. Êtes-vous sûr(e) de vouloir continuer ?',
     clientSheet: 'Fiche client',
+    projects: 'Projets',
+    addProject: 'Ajouter un projet',
   }
 };

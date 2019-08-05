@@ -1,9 +1,18 @@
 import React from 'react';
 import moment from 'moment';
 
-import { withStyles, IconButton } from '@material-ui/core';
+import {
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  withStyles,
+} from '@material-ui/core';
 
-import ArrowRightIcon from '@material-ui/icons/ArrowForward'
+import ArrowRightIcon from '@material-ui/icons/ArrowForward';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 import ContentToolbar from 'components/content/ContentToolbar';
 import Content from 'components/content/Content';
@@ -145,10 +154,33 @@ class ActivityReportPage extends React.Component {
 
         <ContentToolbar title="CRA" />
 
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '20px auto' }}>
-          <button onClick={this.subtractMonth}>{'<'}</button>
+        <div style={{ display: 'inline-block', width: '200px' }}>
+          <FormControl className={classes.formControl}>
+            <Select
+              value={10}
+              defaultValue={10}
+              onChange={this.handleChange}
+              inputProps={{
+                name: 'age',
+                id: 'age-simple',
+              }}
+            >
+              <MenuItem value={10}>Mois</MenuItem>
+              <MenuItem value={20}>Semaine</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px auto' }}>
+          <IconButton aria-label="delete" className={classes.margin} onClick={this.subtractMonth}>
+            <ChevronLeftIcon />
+          </IconButton>
+
           <div style={{ width: '150px', textAlign: 'center' }}>{moment(currentMonth).format('MMMM YYYY')}</div>
-          <button onClick={this.addMonth}>{'>'}</button>
+
+          <IconButton aria-label="delete" className={classes.margin} onClick={this.addMonth}>
+            <ChevronRightIcon />
+          </IconButton>
         </div>
 
         <table className={classes.table}>

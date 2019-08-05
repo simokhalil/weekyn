@@ -73,7 +73,7 @@ const Input = ({ classes, error, helperText, label, onChange, type, value, style
   });
 
   return (
-    <label className={classes.floatingLabel}>
+    <label className={classes.floatingLabel} style={style}>
       <span className={labelClasses} style={{ display: (!value || !value.length) ? 'none' : 'inline' }}>{label}</span>
       <input
         type={type}

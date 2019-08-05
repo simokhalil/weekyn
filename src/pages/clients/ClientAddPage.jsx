@@ -7,7 +7,6 @@ import Content from '../../components/content/Content';
 import ContentToolbar from 'components/content/ContentToolbar';
 import Input from 'components/form/Input';
 import FooterActions from 'components/layout/FooterActions';
-import { clientsDB } from '../../firebase';
 import AppConfig from 'AppConfig';
 import GridContainer from 'components/layout/GridContainer';
 import GridItem from 'components/layout/GridItem';

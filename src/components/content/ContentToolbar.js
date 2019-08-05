@@ -53,6 +53,7 @@ const styles = theme => ({
     width: '100%',
     bottom: 0,
     maxWidth: AppConfig.contentWidth,
+    margin: 0,
   },
   menuItem: {
     display: 'inline-block'
@@ -62,15 +63,16 @@ const styles = theme => ({
     textDecoration: 'none',
     position: 'relative',
     fontSize: '1rem',
-    padding: '14px 2px',
+    padding: '5px 2px',
     margin: '0 14px',
     color: '#acb3bb',
     '&.selected': {
-      color: '#1e88e5',
+      color: '#000',
+      fontWeight: '600',
     },
     '&.selected:after': {
       position: 'absolute',
-      backgroundColor: '#1e88e5',
+      backgroundColor: '#4a90e2',
       bottom: 0,
       left: '0',
       display: 'block',

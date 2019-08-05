@@ -58,17 +58,6 @@ class ClientsListPage extends Component {
       <Content>
         <ContentToolbar title="Clients" section="clients" />
 
-        <div className={classes.actionBar}>
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            onClick={this.gotoAddClient}
-          >
-            Ajouter un client
-          </Button>
-        </div>
-
         <div>
           <ClientsList clients={clients} onDeleteClient={this.onDeleteClient} />
         </div>

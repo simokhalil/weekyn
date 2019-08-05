@@ -62,7 +62,7 @@ class ClientsListPage extends Component {
           <Button
             variant="contained"
             color="secondary"
-            size="large"
+            size="medium"
             onClick={this.gotoAddClient}
           >
             Ajouter un client
