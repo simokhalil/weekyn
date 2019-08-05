@@ -2,6 +2,7 @@ export default {
   hello: 'Bonjour',
 
   common: {
+    actions: 'Actions',
     cancel: 'Annuler',
     confirm: 'Je confirme',
     edit: 'Modifier',
@@ -62,5 +63,7 @@ export default {
     clientSheet: 'Fiche client',
     projects: 'Projets',
     addProject: 'Ajouter un projet',
+    projectName: 'Nom du projet',
+    tjm: 'TJM',
   }
 };

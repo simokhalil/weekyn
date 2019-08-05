@@ -109,12 +109,45 @@ class ProjectsList extends Component {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell>Nom</TableCell>
-              <TableCell align="right">TJM</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell>{t('clients.projectName')}</TableCell>
+              <TableCell align="right">{t('clients.tjm')}</TableCell>
+              <TableCell align="right">{t('common.actions')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
+
+            {isAddingProject && (
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  <Input
+                    label={t('clients.projectName')}
+                    value={newProject.name}
+                    onChange={(value) => this.handleNewProjectChange('name', value)}
+                  />
+                </TableCell>
+
+                <TableCell align="right">
+                  <Input
+                    type="number"
+                    label={t('clients.tjm')}
+                    value={newProject.tjm}
+                    onChange={(value) => this.handleNewProjectChange('tjm', value)}
+                    style={{ display: 'inline-block', width: 'auto' }}
+                  />
+                </TableCell>
+
+                <TableCell align="right">
+                  <Button color="default" variant="outlined" size="small" onClick={this.stopAddingProject} style={{ marginRight: '10px'}}>
+                    {t('common.cancel')}
+                  </Button>
+                  <Button variant="contained" color="secondary" size="small" onClick={this.addProject}>
+                    {t('common.save')}
+                  </Button>
+                </TableCell>
+
+              </TableRow>
+            )}
+
             <>
               {!projects && !isAddingProject && (
                 <TableRow>
@@ -160,34 +193,7 @@ class ProjectsList extends Component {
 
               ))}
             </>
-            {isAddingProject && (
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  <Input
-                    label={t('clients.projectName')}
-                    value={newProject.name}
-                    onChange={(value) => this.handleNewProjectChange('name', value)}
-                  />
-                </TableCell>
 
-                <TableCell align="right">
-                  <Input
-                    type="number"
-                    label={t('clients.tjm')}
-                    value={newProject.tjm}
-                    onChange={(value) => this.handleNewProjectChange('tjm', value)}
-                    style={{ display: 'inline-block', width: 'auto' }}
-                  />
-                </TableCell>
-
-                <TableCell align="right">
-                  <Button variant="contained" color="secondary" size="small" onClick={this.addProject}>
-                    {t('common.save')}
-                  </Button>
-                </TableCell>
-
-              </TableRow>
-            )}
           </TableBody>
         </Table>
       </div>
