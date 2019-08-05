@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
@@ -26,6 +27,7 @@ import Content from 'components/content/Content';
 import ProjectsList from 'components/clients/ProjectsList';
 import SectionTitle from 'components/content/SectionTitle';
 import * as DateUtils from '../../utils/date';
+import * as ProjectActions from '../../redux/actions/projects';
 import { clientsDB, projectsDB } from '../../firebase';
 
 const styles = {
@@ -58,28 +60,13 @@ class ClientDetailsPage extends Component {
 
   getClient = async () => {
     const { currentUser } = this.props;
-    const { match } = this.props;
+    const { match, getProjects } = this.props;
 
     const clientId = match.params.id;
 
     const client = await clientsDB.getClient(currentUser.uid, clientId);
 
-    const projectsQuery = await projectsDB.getProjectsPerClient(currentUser.uid, clientId);
-
-    this.projetctsSpnapshotListener = await projectsQuery.onSnapshot((snapshot) => {
-      const projects = [];
-
-      snapshot.forEach(doc => {
-        console.log('doc', doc.data());
-        projects.push(doc.data());
-      });
-
-      console.log('projects', projects);
-
-      this.setState({
-        projects,
-      });
-    });
+    getProjects(clientId);
 
     this.setState({
       client: client.data(),
@@ -88,8 +75,8 @@ class ClientDetailsPage extends Component {
   };
 
   render() {
-    const { client, clientId, projects } = this.state;
-    const { classes, t } = this.props;
+    const { client, clientId } = this.state;
+    const { classes, projects, t } = this.props;
 
     if (!client) {
       return <div>Loading</div>
@@ -154,11 +141,18 @@ class ClientDetailsPage extends Component {
   }
 }
 
+ClientDetailsPage.propTypes = {
+  currentUser: PropTypes.object.isRequired,
+  getProjects: PropTypes.func.isRequired,
+  projects: PropTypes.array.isRequired,
+}
+
 const mapStateToProps = state => ({
   currentUser: state.users.authUser,
+  projects: state.projects.projects,
 })
 
-export default connect(mapStateToProps)(
+export default connect(mapStateToProps, ProjectActions)(
   translate()(
     withStyles(styles)(
       ClientDetailsPage,

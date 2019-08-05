@@ -24,3 +24,17 @@ export const getProjectsPerClient = (userId, clientId) => {
 
   return collection.where('clientId', '==', clientId);
 }
+
+export const setProjectActivity = (userId, projectId, year, month, activity) => {
+  const collection = db.collection('users').doc(userId).collection('projects').doc(projectId);
+
+  return collection.set({
+    activity: {
+      [year]: {
+        [month]: {
+          ...activity,
+        },
+      },
+    },
+  }, { merge: true });
+}

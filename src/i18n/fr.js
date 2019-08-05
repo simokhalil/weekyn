@@ -3,14 +3,16 @@ export default {
 
   common: {
     actions: 'Actions',
+    add: 'Ajouter',
     cancel: 'Annuler',
     confirm: 'Je confirme',
-    edit: 'Modifier',
-    save: 'Enregistrer',
-    validate: 'Valider',
-    ok: 'Ok',
     createdAt: 'Créé le',
+    edit: 'Modifier',
     noDataToShow: 'Aucune donnée à afficher',
+    ok: 'Ok',
+    save: 'Enregistrer',
+    select: 'Sélectionner',
+    validate: 'Valider',
   },
 
   menus: {
@@ -65,5 +67,9 @@ export default {
     addProject: 'Ajouter un projet',
     projectName: 'Nom du projet',
     tjm: 'TJM',
-  }
+  },
+
+  activity: {
+    addLine: 'Ajouter une ligne',
+  },
 };

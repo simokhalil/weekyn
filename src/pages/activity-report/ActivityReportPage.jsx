@@ -1,7 +1,11 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
+import { connect } from 'react-redux';
+import { translate } from 'react-polyglot';
 
 import {
+  CardHeader,
   FormControl,
   IconButton,
   InputLabel,
@@ -14,10 +18,14 @@ import ArrowRightIcon from '@material-ui/icons/ArrowForward';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
+import Button from '../../components/form/Button';
 import ContentToolbar from 'components/content/ContentToolbar';
 import Content from 'components/content/Content';
+import SectionTitle from '../../components/content/SectionTitle';
+import * as ProjectsActions from '../../redux/actions/projects';
 
 import 'moment/locale/fr';
+import ProjectsListDialog from 'components/activity/ProjectsListDialog';
 // import './Homepage.scss';
 
 moment.locale('fr');
@@ -75,13 +83,50 @@ class ActivityReportPage extends React.Component {
 
     const currentMonth = moment(new Date(today.getFullYear(), today.getMonth(), 1));
 
+    const currentYear = currentMonth.year();
+    const currentMonthIndex = currentMonth.month();
+
     this.state = {
       currentMonth,
+      // currentMonthIndex,
+      // currentYear,
       monthLength: currentMonth.daysInMonth(),
       editingIndex: null,
       values: {},
+      isProjectsListDialogOpen: false,
     };
+
+    props.setCurrentYearAndMonth(currentYear, currentMonthIndex);
+
+    props.getProjects();
   }
+
+  componentDidMount() {
+    const { getProjectsByYearAndMonth } = this.props;
+
+    getProjectsByYearAndMonth();
+  }
+
+  /* componentWillReceiveProps(nextProps) {
+    const { currentYear, currentMonthIndex, projectLines } = this.state;
+
+    if (nextProps.projects) {
+      console.log('nextProps projects', nextProps.projects);
+
+      const newProjectLines = nextProps.projects.filter((project => {
+        return (!!project.activity && !!project.activity[currentYear] && !!project.activity[currentYear][currentMonthIndex]);
+      }));
+
+      console.log('filtered projects', projectLines);
+
+      this.setState({
+        projectLines: [
+          ...projectLines,
+          ...newProjectLines,
+        ],
+      });
+    }
+  } */
 
   getDayName = (day) => {
     const { currentMonth } = this.state;
@@ -89,21 +134,37 @@ class ActivityReportPage extends React.Component {
   }
 
   addMonth = async () => {
-    const { currentMonth } = this.state;
+    const { getProjectsByYearAndMonth, setCurrentYearAndMonth } = this.props;
+    let currentMonth = this.state.currentMonth;
 
+    currentMonth = moment(currentMonth.add(1, 'months'));
+
+    const currentYear = currentMonth.year();
+    const currentMonthIndex = currentMonth.month();
+
+    setCurrentYearAndMonth(currentYear, currentMonthIndex);
+    getProjectsByYearAndMonth();
 
     this.setState({
-      currentMonth: moment(currentMonth.add(1, 'months')),
+      currentMonth,
       monthLength: currentMonth.daysInMonth(),
     });
   }
 
   subtractMonth = async () => {
-    const { currentMonth } = this.state;
+    const { getProjectsByYearAndMonth, setCurrentYearAndMonth } = this.props;
+    let currentMonth = this.state.currentMonth;
 
+    currentMonth = moment(currentMonth.subtract(1, 'months'));
+
+    const currentYear = currentMonth.year();
+    const currentMonthIndex = currentMonth.month();
+
+    setCurrentYearAndMonth(currentYear, currentMonthIndex);
+    getProjectsByYearAndMonth();
 
     this.setState({
-      currentMonth: moment(currentMonth.subtract(1, 'months')),
+      currentMonth,
       monthLength: currentMonth.daysInMonth(),
     });
   }
@@ -113,18 +174,12 @@ class ActivityReportPage extends React.Component {
     return moment(currentMonth).date(dayOfMonth).day() % 6 === 0;
   };
 
-  onInputBlur = (index, value) => {
-    const { values } = this.state;
-
-    this.setState({
-      editingIndex: null,
-      values: {
-        ...values,
-        [index]: value,
-      },
-    });
+  onInputBlur = (projectLineIndex) => {
+    const { saveProjectActivity } = this.props;
+    saveProjectActivity(projectLineIndex);
   };
 
+  // TODO
   setAllDays = () => {
     const { monthLength } = this.state;
     const values = {}
@@ -138,27 +193,54 @@ class ActivityReportPage extends React.Component {
     this.setState({ values });
   };
 
+  openProjectsListDialog = () => {
+    this.setState({ isProjectsListDialogOpen: true });
+  };
+
+  closeProjectsListDialog = () => {
+    this.setState({ isProjectsListDialogOpen: false });
+  };
+
+  addProjectLine = (project) => {
+    const { addProjectLine } = this.props;
+    addProjectLine(project);
+  };
+
+  setDayActivity = (projectIndex, dayIndex, value) => {
+    const { projectLines, setProjectLineDayActivity } = this.props;
+
+    const { currentMonthIndex, currentYear } = this.props;
+
+    projectLines[projectIndex].activity = projectLines[projectIndex].activity || {};
+    projectLines[projectIndex].activity[currentYear] = projectLines[projectIndex].activity[currentYear] || {};
+    projectLines[projectIndex].activity[currentYear][currentMonthIndex] = projectLines[projectIndex].activity[currentYear][currentMonthIndex] || {};
+    projectLines[projectIndex].activity[currentYear][currentMonthIndex][dayIndex] = parseFloat(value);
+
+    setProjectLineDayActivity(projectLines);
+  };
+
   render() {
-    const { currentMonth, editingIndex, monthLength, values } = this.state;
-    const { classes } = this.props;
+    const { currentMonth, isProjectsListDialogOpen, monthLength } = this.state;
+    const { classes, currentMonthIndex, currentYear, t, projects, projectLines } = this.props;
 
     const daysArray = [...Array(monthLength).keys()];
-
-    console.log('values', values);
-    console.log('currentMonth', currentMonth);
-    console.log('monthLength', monthLength);
-    console.log('daysArray', daysArray);
 
     return (
       <Content fullWidth>
 
-        <ContentToolbar title="CRA" />
+        <CardHeader
+          action={
+            <Button variant="contained" color="secondary" size="small" onClick={this.openProjectsListDialog}>
+              {t('activity.addLine')}
+            </Button>
+          }
+          title={<SectionTitle label="CRA" />}
+        />
 
         <div style={{ display: 'inline-block', width: '200px' }}>
           <FormControl className={classes.formControl}>
             <Select
               value={10}
-              defaultValue={10}
               onChange={this.handleChange}
               inputProps={{
                 name: 'age',
@@ -188,6 +270,9 @@ class ActivityReportPage extends React.Component {
             <tr>
               <>
                 <td className={classes.tableFirstCol}>Clients / Projets</td>
+                <td className={classes.tableCol} />
+                <td className={classes.tableCol}>Tot</td>
+
                 {daysArray.map((day, index) => (
                   <td
                     key={index}
@@ -200,40 +285,77 @@ class ActivityReportPage extends React.Component {
                 ))}
               </>
             </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <>
-                <td className={classes.tableFirstCol}>
-                  <IconButton aria-label="delete" size="small" onClick={this.setAllDays}>
-                    <ArrowRightIcon fontSize="inherit" />
-                  </IconButton>
-                </td>
-                {daysArray.map((day, index) => (
-                  <td
-                    key={index}
-                    className={classes.tableCol}
-                    style={{ backgroundColor: this.isWeekend(day + 1) ? '#eee' : 'transparent' }}
-                  >
-                    <input
-                      onDoubleClick={(e) => { console.log('ok'); this.setState({ editingIndex: index }); e.target.focus(); }}
-                      onBlur={(e) => this.onInputBlur(index, e.target.value)}
-                      className={classes.tableInput}
-                      // readOnly={index !== editingIndex}
-                      defaultValue={values[index] || ''}
-                    />
+          </thead>
+          <tbody>
+            {projectLines.map((projectLine, projectLineIndex) => (
+              <tr key={projectLineIndex}>
+                <>
+                  <td className={classes.tableFirstCol}>
+                    {projectLine.name}
                   </td>
-                ))}
-              </>
-            </tr>
+
+                  <td className={classes.tableCol}>
+                    <IconButton aria-label="delete" size="small" onClick={this.setAllDays}>
+                      <ArrowRightIcon fontSize="inherit" />
+                    </IconButton>
+                  </td>
+
+                  <td className={classes.tableCol}>
+
+                  </td>
+
+
+                  {daysArray.map((day, index) => (
+                    <td
+                      key={index}
+                      className={classes.tableCol}
+                      style={{ backgroundColor: this.isWeekend(day + 1) ? '#eee' : 'transparent' }}
+                    >
+                      <input
+                        onBlur={(e) => this.onInputBlur(projectLineIndex)}
+                        className={classes.tableInput}
+                        // readOnly={index !== editingIndex}
+                        defaultValue={
+                          (
+                            projectLine.activity
+                            && projectLine.activity[currentYear]
+                            && projectLine.activity[currentYear][currentMonthIndex]
+                            && projectLine.activity[currentYear][currentMonthIndex][index]
+                          )
+                          || ''}
+                        onChange={(e) => this.setDayActivity(projectLineIndex, index, e.target.value)}
+                      />
+                    </td>
+                  ))}
+                </>
+              </tr>
+            ))}
           </tbody>
         </table>
+
+        <ProjectsListDialog projects={projects} isOpen={isProjectsListDialogOpen} onClose={this.closeProjectsListDialog} onSelect={this.addProjectLine} />
 
       </Content>
     );
   }
 }
 
+ActivityReportPage.propTypes = {
+  projects: PropTypes.array.isRequired,
+  projectLines: PropTypes.array.isRequired,
+}
+
+const mapStateToProps = state => ({
+  projects: state.projects.projects,
+  projectLines: state.projects.projectLines,
+  currentYear: state.projects.currentYear,
+  currentMonthIndex: state.projects.currentMonthIndex,
+});
+
 export default withStyles(styles)(
-  ActivityReportPage,
+  translate()(
+    connect(mapStateToProps, ProjectsActions)(
+      ActivityReportPage,
+    ),
+  ),
 );
