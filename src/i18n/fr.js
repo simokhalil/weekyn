@@ -18,7 +18,8 @@ export default {
   menus: {
     dashboard: 'Accueil',
     clients: 'Clients',
-    timings: 'Mon CRA',
+    timings: 'Activité',
+    invoices: 'Factures',
     settings: 'Paramètres',
   },
 

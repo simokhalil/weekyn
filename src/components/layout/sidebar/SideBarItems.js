@@ -1,7 +1,9 @@
 // import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import AddIcon from '@material-ui/icons/Add';
+import CalendarIcon from '@material-ui/icons/DateRangeOutlined';
 import CheckIcon from '@material-ui/icons/Check';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import InvoiceIcon from '@material-ui/icons/DescriptionOutlined';
 // import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -19,12 +21,7 @@ export default [
     id: 'dashboard',
     icon: DashboardIcon,
     path: AppConfig.routePaths.homepage,
-    items: [{
-      type: 'item',
-      text: 'Offres',
-      path: AppConfig.routePaths.homepage,
-      icon: DashboardIcon,
-    }],
+    items: [],
   },
   // section
   {
@@ -35,14 +32,20 @@ export default [
   },
   {
     id: 'timings',
-    icon: SubjectIcon,
+    icon: CalendarIcon,
     path: AppConfig.routePaths.activity,
+    items: [],
+  },
+  {
+    id: 'invoices',
+    icon: InvoiceIcon,
+    path: AppConfig.routePaths.invoices,
     items: [],
   },
   {
     id: 'settings',
     icon: SettingsIcon,
-    path: AppConfig.routePaths.homepage,
+    path: AppConfig.routePaths.settings,
     items: [],
   },
 ];

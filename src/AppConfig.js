@@ -17,5 +17,7 @@ export default {
     clientAdd: '/app/clients/add',
     clientDetails: '/app/clients/:id',
     activity: '/app/activity',
+    invoices: '/app/invoices',
+    settings: '/app/settings',
   },
 };

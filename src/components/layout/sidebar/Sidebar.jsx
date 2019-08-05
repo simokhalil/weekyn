@@ -10,6 +10,7 @@ import LinkIcon from '@material-ui/icons/Link';
 
 import AppConfig from '../../../AppConfig';
 import sideMenuItems from './SideBarItems';
+import LogoImage from '../../../assets/images/Weekyn_logo_white_sm.png';
 
 import './SideBar.scss';
 
@@ -18,7 +19,7 @@ const drawerWidth = AppConfig.drawerWidth;
 const styles = theme => ({
   drawerPaper: {
     border: 'none',
-    background: 'transparent linear-gradient(80deg, #2f9998 1%, #1a78cf 99%) repeat scroll 0% 0%',
+    background: 'transparent linear-gradient(80deg, #3863a3 1%, #1a78cf 99%) repeat scroll 0% 0%',
     position: 'relative',
     textAlign: 'center',
     whiteSpace: 'nowrap',
@@ -40,6 +41,7 @@ const styles = theme => ({
   logo: {
     color: '#fff',
     fontSize: '3rem',
+    maxWidth: '70%',
   },
   menuItem: {
     display: 'flex',
@@ -81,7 +83,7 @@ class SideMenu extends Component {
         anchor="left"
       >
         <div className={classes.toolbar}>
-          <LinkIcon className={classes.logo} />
+          <img src={LogoImage} className={classes.logo} />
         </div>
 
         {sideMenuItems.map((sideMenuGroup, index) => (
