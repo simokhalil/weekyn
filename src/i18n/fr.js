@@ -13,6 +13,8 @@ export default {
     save: 'Enregistrer',
     select: 'Sélectionner',
     validate: 'Valider',
+    delete: 'Supprimer',
+    download: 'Télécharger',
   },
 
   menus: {
@@ -72,5 +74,17 @@ export default {
 
   activity: {
     addLine: 'Ajouter une ligne',
+  },
+
+  invoices: {
+    invoices: 'Factures',
+    invoice: 'Facture',
+    newInvoice: 'Nouvelle facture',
+    date: 'Date d\'émission',
+    number: 'N°',
+    clientName: 'Client',
+    amountExclTax: 'Montant HT',
+    amountInclTax: 'Montant TTC',
+    status: 'Statut',
   },
 };

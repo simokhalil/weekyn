@@ -18,6 +18,7 @@ export default {
     clientDetails: '/app/clients/:id',
     activity: '/app/activity',
     invoices: '/app/invoices',
+    newInvoice: '/app/invoices/new',
     settings: '/app/settings',
   },
 };

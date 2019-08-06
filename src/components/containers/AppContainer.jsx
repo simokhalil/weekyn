@@ -12,11 +12,13 @@ import SideMenu from '../layout/sidebar/Sidebar';
 import { db, firebase } from '../../firebase';
 
 import ActivityReportPage from 'pages/activity-report/ActivityReportPage';
+import ClientAddPage from 'pages/clients/ClientAddPage';
 import ClientDetailsPage from 'pages/clients/ClientDetailsPage';
 import ClientsPage from 'pages/clients/ClientsPage';
-import Homepage from 'pages/homepage/Homepage';
-import ClientAddPage from 'pages/clients/ClientAddPage';
 import ClientsListPage from 'pages/clients/ClientsListPage';
+import Homepage from 'pages/homepage/Homepage';
+import InvoiceCreatePage from 'pages/invoices/InvoiceCreatePage';
+import InvoicesPage from 'pages/invoices/InvoicesPage';
 
 const styles = theme => {
   console.log(theme.palette);
@@ -177,6 +179,9 @@ class AppContainer extends React.Component {
               <Route path={AppConfig.routePaths.clients} component={ClientsPage} />
 
               <Route path={AppConfig.routePaths.activity} exact component={ActivityReportPage} />
+
+              <Route path={AppConfig.routePaths.invoices} exact component={InvoicesPage} />
+              <Route path={AppConfig.routePaths.newInvoice} exact component={InvoiceCreatePage} />
 
               <Route path="**" component={NotFoundPage} />
             </Switch>
