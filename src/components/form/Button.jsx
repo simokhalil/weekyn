@@ -12,17 +12,29 @@ const useStyles = makeStyles({
   secondary: {
     color: '#fff',
   },
+  outlined: {
+    color: '#00c386',
+  }
 });
 
 const Button = ({ children, className, color, size, variant, ...rest }) => {
   const classes = useStyles();
+
+  const classnames = classNames(
+    classes.root,
+    classes[color],
+    className,
+    {
+      [classes.outlined]: variant === 'outlined',
+    }
+  );
 
   return (
     <MuiButton
       color={color}
       variant={variant}
       size={size}
-      className={classNames(classes.root, classes[color], className)}
+      className={classnames}
       {...rest}
     >
       {children}

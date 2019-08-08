@@ -1,3 +1,5 @@
+import AppConfig from "AppConfig";
+
 export default {
   hello: 'Bonjour',
 
@@ -85,6 +87,17 @@ export default {
     clientName: 'Client',
     amountExclTax: 'Montant HT',
     amountInclTax: 'Montant TTC',
+    exportPdf: 'Télécharger en PDF',
     status: 'Statut',
+    statusLabel: {
+      [AppConfig.invoiceStates.DRAFT]: 'Brouillon',
+      [AppConfig.invoiceStates.SAVED]: 'Enregitré',
+      [AppConfig.invoiceStates.SENT]: 'Enregitré, Envoyé',
+    },
+    newInvoiceTitle: {
+      [AppConfig.invoiceStates.DRAFT]: 'Nouvelle facture',
+      [AppConfig.invoiceStates.SAVED]: 'Facture N° %{number}',
+      [AppConfig.invoiceStates.SENT]: 'Facture N° %{number}',
+    },
   },
 };

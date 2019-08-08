@@ -21,4 +21,10 @@ export default {
     newInvoice: '/app/invoices/new',
     settings: '/app/settings',
   },
+
+  invoiceStates: {
+    DRAFT: 0,
+    SAVED: 1,
+    SENT: 2,
+  }
 };

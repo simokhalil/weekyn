@@ -1,12 +1,29 @@
 import React, { Component } from 'react';
-
-import Doc from '../../utils/doc';
-import PdfContainer from '../../components/invoices/PdfContainer';
+import classNames from 'classnames';
+import { translate } from 'react-polyglot';
 
 import {
+  CardHeader,
+  Chip,
+  Divider,
+  FormControl,
+  InputBase,
+  NativeSelect,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   withStyles,
 } from '@material-ui/core';
 import Content from 'components/content/Content';
+
+import AppConfig from 'AppConfig';
+import Button from '../../components/form/Button';
+import ColorPicker from 'components/invoices/ColorPicker';
+import Doc from '../../utils/doc';
+import PdfContainer from '../../components/invoices/PdfContainer';
+import SectionTitle from '../../components/content/SectionTitle';
 
 import '../../stylesheets/invoice.scss';
 
@@ -22,39 +39,220 @@ const styles = {
     margin: 'auto',
     fontSize: '10pt',
   },
+  colorPicker: {
+    position: 'absolute',
+    top: '15px',
+    right: '-30px',
+  },
+};
+
+const StyledTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: '#1E76CC',
+    color: theme.palette.common.white,
+    paddingRight: '10px',
+    paddingLeft: '10px',
+    borderLeft: '2px solid #fff',
+    borderRight: '2px solid #fff',
+    '&:not(.description)': {
+      width: '100px',
+    },
+  },
+  body: {
+    fontSize: 14,
+    padding: 0,
+    paddingTop: '10px',
+    borderLeft: '2px solid #fff',
+    borderRight: '2px solid #fff',
+    borderBottom: 0,
+    '&:not(.description)': {
+      width: '100px',
+    }
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles(theme => ({
+  root: {
+    marginBottom: '10px',
+    paddingTop: '10px',
+    /* '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.background.default,
+    },*/
+  },
+}))(TableRow);
+
+const INITIAL_INVOICE_LINE = {
+  description: '',
+  priceExclTax: '',
+  tax: 20,
+  quantity: '',
+  totalExclTax: 0,
+};
+
+const INITIAL_INVOICE_STATE = {
+  invoice: {
+    status: AppConfig.invoiceStates.DRAFT,
+    number: '',
+    color: '#0693E3',
+    emitterInfos: 'Khalil\r\nkhalil@kelyo.fr',
+    emissionDate: '',
+    dueDate: '',
+    title: '',
+    totalExclTax: 0,
+    totalInclTax: 0,
+    client: {
+      name: '',
+      address: '',
+      postalCode: '',
+      city: '',
+      country: '',
+    },
+    lines: [{ ...INITIAL_INVOICE_LINE }],
+  },
 };
 
 class InvoiceCreatePage extends Component {
+  state = {
+    ...INITIAL_INVOICE_STATE,
+  };
 
-  createPdf = (html) => Doc.html2pdf(html);
+  invoiceDiv = null;
+
+  createPdf = (html) => {
+    console.log('html', html);
+    console.log('invoiceDiv', this.invoiceDiv);
+    Doc.html2pdf(html);
+  }
+
+  handleInvoiceInputChange = (field, value) => {
+    const { invoice } = this.state;
+    invoice[field] = value;
+    this.setState({ invoice });
+  };
+
+  handleClientInputChange = (field, value) => {
+    const { invoice } = this.state;
+    invoice.client[field] = value;
+    this.setState({ invoice });
+  };
+
+  handleInvoiceLineChange = (lineIndex, field, value) => {
+    const { invoice } = this.state;
+    invoice.lines[lineIndex][field] = parseFloat(value) || value ;
+
+    if (parseFloat(invoice.lines[lineIndex].quantity) && parseFloat(invoice.lines[lineIndex].priceExclTax)) {
+      const totalExclTax = parseFloat(invoice.lines[lineIndex].quantity) * parseFloat(invoice.lines[lineIndex].priceExclTax);
+      invoice.lines[lineIndex].totalExclTax = totalExclTax;
+
+      this.calculateInvoiceTotals();
+    }
+
+    this.setState({ invoice });
+  };
+
+  calculateInvoiceTotals = () => {
+    const { invoice } = this.state;
+    invoice.totalExclTax = +0;
+    invoice.totalInclTax = +0;
+
+    invoice.lines.forEach((line) => {
+      invoice.totalExclTax += parseFloat(line.totalExclTax);
+      invoice.totalInclTax += parseFloat(line.totalExclTax) + (parseFloat(line.totalExclTax) * line.tax / 100);
+    });
+
+    this.setState({ invoice });
+  };
+
+  addInvoiceLine = () => {
+    const { invoice } = this.state;
+    invoice.lines.push({ ...INITIAL_INVOICE_LINE });
+    this.setState({ invoice });
+  };
+
+  saveInvoice = () => {
+    const { invoice } = this.state;
+    invoice.status = AppConfig.invoiceStates.SAVED;
+
+    this.setState({ invoice });
+  };
 
   render() {
-    const { classes } = this.props;
+    const { invoice } = this.state;
+    const { classes, t } = this.props;
 
     return (
       <Content>
-        <div>Nouvelle facture</div>
+        <CardHeader
+          action={
+            <>
+              <Button variant="contained" color="secondary" size="small" onClick={this.saveInvoice} style={{ marginRight: '10px' }}>
+                {t('common.save')}
+              </Button>
+              <Button variant="outlined" color="secondary" size="small" onClick={() => this.createPdf(this.invoiceDiv)}>
+                {t('invoices.exportPdf')}
+              </Button>
+            </>
+          }
+          title={<SectionTitle label={t(`invoices.newInvoiceTitle.${invoice.status}`, { number: invoice.number })} />}
+          style={{ marginBottom: '30px' }}
+        />
+
+        <div style={{ textAlign: 'center', margin: '10px 0 30px' }}>
+          <Chip label={t(`invoices.statusLabel.${invoice.status}`)} className={classes.chip} />
+        </div>
 
         <PdfContainer createPdf={this.createPdf}>
-          <div id="invoice" className={classes.page}>
+          <div id="invoice" className={classes.page} ref={ref => this.invoiceDiv = ref}>
             <div className="invoiceEditorHeader">
               <div className="invoiceEditorEmitter">
                 <div className="logoWrapper fakeInput">
                   <img src={require('../../assets/images/Weekyn_logo.png')} />
                 </div>
 
-                <textarea className="emitterInfos fakeInput" placeholder="Infos emetteur" defaultValue="" />
+                <textarea
+                  className="emitterInfos fakeInput"
+                  placeholder="Infos emetteur"
+                  value={invoice.emitterInfos}
+                  onChange={(e) => this.handleInvoiceInputChange('emitterInfos', e.target.value)}
+                />
               </div>
 
               <div className="invoiceEditorCustomer">
                 <div className="invoiceEditorCustomerWrapper">
-                  <input className="fakeInput" placeholder="Client" />
-                  <input className="fakeInput" placeholder="Adresse" />
+                  <input
+                    className="fakeInput"
+                    placeholder="Client"
+                    value={invoice.client.name}
+                    onChange={(e) => this.handleClientInputChange('name', e.target.value)}
+                  />
+                  <input
+                    className="fakeInput"
+                    placeholder="Adresse"
+                    value={invoice.client.address}
+                    onChange={(e) => this.handleClientInputChange('address', e.target.value)}
+                  />
                   <div style={{ display: 'flex' }}>
-                    <input className="fakeInput" placeholder="CP" style={{ width: '60px' }} />
-                    <input className="fakeInput" placeholder="Ville" style={{ flex: 1 }} />
+                    <input
+                      className="fakeInput"
+                      placeholder="CP"
+                      value={invoice.client.postalCode}
+                      onChange={(e) => this.handleClientInputChange('postalCode', e.target.value)}
+                      style={{ width: '80px' }}
+                    />
+                    <input
+                      className="fakeInput"
+                      placeholder="Ville"
+                      value={invoice.client.city}
+                      onChange={(e) => this.handleClientInputChange('city', e.target.value)}
+                      style={{ flex: 1 }}
+                    />
                   </div>
-                  <input className="fakeInput" placeholder="Pays" />
+                  <input
+                    className="fakeInput"
+                    placeholder="Pays"
+                    value={invoice.client.country}
+                    onChange={(e) => this.handleClientInputChange('country', e.target.value)}
+                  />
                 </div>
               </div>
             </div>
@@ -64,16 +262,128 @@ class InvoiceCreatePage extends Component {
                 <span>Facture</span>
               </div>
 
-              <input className="invoiceTitle fakeInput" placeholder="Intitulé de la facture" />
+              <input
+                className="invoiceTitle fakeInput"
+                placeholder="Intitulé de la facture"
+                value={invoice.title}
+                onChange={(e) => this.handleInvoiceInputChange('title', e.target.value)}
+              />
 
               <div className="invoiceDates">
                 <div className="fakeInput">
                   <span>Date D'émission</span>
-                  <input placeholder="jj/mm/aaaa" />
+                  <input
+                    placeholder="jj/mm/aaaa"
+                    value={invoice.emissionDate}
+                    onChange={(e) => this.handleInvoiceInputChange('emissionDate', e.target.value)}
+                  />
                 </div>
                 <div className="fakeInput">
                   <span>Date De règlement</span>
-                  <input placeholder="jj/mm/aaaa" />
+                  <input
+                    placeholder="jj/mm/aaaa"
+                    value={invoice.dueDate}
+                    onChange={(e) => this.handleInvoiceInputChange('dueDate', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="invoiceLines">
+              <ColorPicker
+                color={invoice.color}
+                onChange={(color) => this.handleInvoiceInputChange('color', color)}
+                className={classNames(classes.colorPicker, 'colorPicker')}
+              />
+
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell className="description" style={{ backgroundColor: invoice.color }}>Description</StyledTableCell>
+                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color }}>Quantité</StyledTableCell>
+                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color }}>Prix unitaire</StyledTableCell>
+                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color }}>TVA</StyledTableCell>
+                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color }}>Prix HT</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+
+                <TableBody style={{ paddingTop: '10px' }}>
+                  {invoice.lines.map((line, lineIndex) => (
+                    <StyledTableRow key={lineIndex}>
+                      <StyledTableCell className="description" scope="row">
+                        <input
+                          className="fakeInput description"
+                          placeholder="Description"
+                          value={line.description}
+                          onChange={(e) => this.handleInvoiceLineChange(lineIndex, 'description', e.target.value)}
+                          style={{ width: '100%' }}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        <input
+                          className="fakeInput"
+                          placeholder="Quantité"
+                          value={line.quantity}
+                          onChange={(e) => this.handleInvoiceLineChange(lineIndex, 'quantity', e.target.value)}
+                          style={{ width: '100%', textAlign: 'right' }}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        <input
+                          className="fakeInput"
+                          placeholder="Prix unitaire"
+                          value={line.priceExclTax}
+                          onChange={(e) => this.handleInvoiceLineChange(lineIndex, 'priceExclTax', e.target.value)}
+                          style={{ width: '100%', textAlign: 'right' }}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        <FormControl className={classes.formControl}>
+                          <NativeSelect
+                            className={classes.selectEmpty}
+                            value={line.tax}
+                            name="age"
+                            onChange={(e) => this.handleInvoiceLineChange(lineIndex, 'tax', e.target.value)}
+                            inputProps={{ 'aria-label': 'TVA' }}
+                            input={<InputBase className="fakeInput" />}
+                          >
+                            <option value="" disabled>
+                              TVA
+                            </option>
+                            <option value={0}>0%</option>
+                            <option value={10}>10%</option>
+                            <option value={20}>20%</option>
+                          </NativeSelect>
+                        </FormControl>
+                      </StyledTableCell>
+                      <StyledTableCell align="right">{line.totalExclTax}</StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              <Divider style={{ margin: '30px auto 10px' }} />
+
+              <div className="ButtonAddLine">
+                <Button
+                  color="secondary"
+                  size="small"
+                  variant="outlined"
+                  onClick={this.addInvoiceLine}
+                >
+                  Ajouter une ligne
+                </Button>
+
+              </div>
+
+              <div className="invoiceTotals" style={{ color: invoice.color }}>
+                <div className="row">
+                  <span>Total HT</span>
+                  <span>{invoice.totalExclTax.toFixed(2)}</span>
+                </div>
+                <div className="row">
+                  <span className="total">Total TTC</span>
+                  <span className="total amount">{invoice.totalInclTax.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -85,5 +395,7 @@ class InvoiceCreatePage extends Component {
 }
 
 export default withStyles(styles)(
-  InvoiceCreatePage,
+  translate()(
+    InvoiceCreatePage,
+  ),
 );

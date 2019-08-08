@@ -3,7 +3,7 @@
     outline: 0;
   }
 
-  .fakeInput, input:not([readonly]) {
+  .fakeInput, input:not([readonly]):not([spellcheck=false]), .MuiInputBase-root {
     font-size: 14px;
     border: 1px dashed #bfcee1;
     transition: all .4s;
@@ -16,13 +16,39 @@
     cursor: pointer;
   }
 
+  .MuiFormControl-root, .MuiInputBase-root {
+    width: 100%;
+    padding: 0;
+    text-align: right;
+  }
+
+  .MuiNativeSelect-select {
+    padding: 5px 9px 8px 35px;
+  }
+
+  .MuiNativeSelect-select:focus {
+    background-color: transparent;
+  }
+
+  .colorPicker {
+    transition: all .4s;
+  }
+
   &:not(:hover) {
-    .fakeInput {
+    .fakeInput, .MuiInputBase-root {
       border: 1px solid #fff;
 
-      &::placeholder {
-        color: #fff;
+      &:placeholder-shown {
+        visibility: hidden;
       }
+    }
+
+    .ButtonAddLine {
+      opacity: 0;
+    }
+
+    .colorPicker {
+      opacity: 0;
     }
   }
 
@@ -92,7 +118,7 @@
     flex-direction: column;
     display: flex;
     flex: 1 1 0px;
-    margin-bottom: 116px;
+    margin-bottom: 20px;
 
     .invoiceType {
       line-height: 20px;
@@ -126,6 +152,33 @@
         padding: 0;
         border: none;
         cursor: pointer;
+      }
+    }
+  }
+
+  .invoiceLines {
+    position: relative;
+  }
+
+  .invoiceTotals {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    position: relative;
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 45%;
+      align-self: flex-end;
+      position: relative;
+      font-size: 1.1rem;
+
+      .total {
+        font-weight: 600;
+        font-size: 1.2rem;
       }
     }
   }

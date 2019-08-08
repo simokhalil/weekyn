@@ -8,9 +8,9 @@ export default (props) => {
   };
   return (
     <section className="pdf-container">
-      <section className="pdf-toolbar">
+      {/* <section className="pdf-toolbar">
         <button onClick={createPdf}>Create PDF</button>
-      </section>
+      </section> */}
       <section className="pdf-body" ref={bodyRef}>
         {props.children}
       </section>

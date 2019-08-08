@@ -40,6 +40,9 @@ class ProjectsList extends Component {
 
   render() {
     const { classes, t, invoices } = this.props;
+    const { anchorEl } = this.state;
+
+    const isInvoiceMenuOpen = Boolean(anchorEl);
 
     console.log('invoices list', invoices);
 
@@ -87,15 +90,18 @@ class ProjectsList extends Component {
                   <TableCell align="right">{invoice.status}</TableCell>
                   <TableCell align="right">
                     <>
-                      <IconButton aria-controls={`action-menu-${invoice.id}`} aria-haspopup="true" edge="end" aria-label="Edit project" onClick={this.handleInvoiceMenuOpen}>
+                      <IconButton
+                        aria-owns={`action-menu-${invoice.id}`}
+                        aria-haspopup="true"
+                        onClick={this.handleInvoiceMenuOpen}
+                      >
                         <MoreHorizIcon />
                       </IconButton>
 
                       <Menu
                         id={`action-menu-${invoice.id}`}
-                        anchorEl={this.state.anchorEl}
-                        keepMounted
-                        open={Boolean(this.state.anchorEl)}
+                        anchorEl={anchorEl}
+                        open={isInvoiceMenuOpen}
                         onClose={this.handleProjectMenuClose}
                       >
                         <MenuItem onClick={this.handleProjectMenuClose} style={{ fontSize: '0.8rem' }}>{t('common.download')}</MenuItem>
