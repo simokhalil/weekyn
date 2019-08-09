@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
+import { withRouter } from 'react-router';
 
 import {
   IconButton,
@@ -18,6 +19,7 @@ import {
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
+import AppConfig from 'AppConfig';
 import * as DateUtils from '../../utils/date';
 import * as ProjectsActions from '../../redux/actions/projects';
 
@@ -37,6 +39,11 @@ class ProjectsList extends Component {
   handleInvoiceMenuClose = () => {
     this.setState({ anchorEl: null });
   };
+
+  gotoInvoice = (id) => {
+    const { history } = this.props;
+    history.push(`${AppConfig.routePaths.invoices}/${id}`);
+  }
 
   render() {
     const { classes, t, invoices } = this.props;
@@ -80,13 +87,13 @@ class ProjectsList extends Component {
               )}
 
               {invoices && invoices.map((invoice, invoiceIndex) => (
-                <TableRow key={invoiceIndex}>
+                <TableRow key={invoiceIndex} onClick={() => this.gotoInvoice(invoice.id)}>
                   <TableCell component="th" scope="row">
                     <ListItemText primary={DateUtils.formatDate(invoice.date)} secondary={invoice.title} />
                   </TableCell>
                   <TableCell align="right">{invoice.number}</TableCell>
                   <TableCell align="right">{invoice.client.name}</TableCell>
-                  <TableCell align="right">{invoice.amount}</TableCell>
+                  <TableCell align="right">{invoice.totalExclTax}</TableCell>
                   <TableCell align="right">{invoice.status}</TableCell>
                   <TableCell align="right">
                     <>
@@ -134,7 +141,9 @@ ProjectsList.defaultProps = {
 export default withStyles(styles)(
   translate()(
     connect(null, ProjectsActions)(
-      ProjectsList,
+      withRouter(
+        ProjectsList,
+      ),
     ),
   ),
 );

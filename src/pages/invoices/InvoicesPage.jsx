@@ -1,4 +1,6 @@
-import React from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 
 import {
@@ -11,9 +13,10 @@ import Content from '../../components/content/Content';
 // import ContentToolbar from '../../components/content/ContentToolbar';
 import InvoicesList from '../../components/invoices/InvoicesList';
 import SectionTitle from '../../components/content/SectionTitle';
+import * as InvoicesActions from '../../redux/actions/invoices';
 
 
-const invoices = [{
+/* const invoices = [{
   id: 1,
   type: 'INVOICE',
   number: '001',
@@ -22,33 +25,56 @@ const invoices = [{
   title: 'Facture',
   amount: 478,
   status: 'DRAFT'
-}]
+}] */
 
-const InvoicesPage = ({ history, t }) => {
+class InvoicesPage extends Component {
+  constructor(props) {
+    super(props);
+    props.getInvoices();
+  }
 
-  const gotoNewInvoice = () => {
+  gotoNewInvoice = () => {
+    const { history } = this.props;
     history.push(AppConfig.routePaths.newInvoice);
   };
 
-  return (
-    <Content>
-      {/* <ContentToolbar title={t('invoices.invoices')} /> */}
+  render() {
+    const { invoices, t } = this.props;
+    return (
+      <Content>
+        {/* <ContentToolbar title={t('invoices.invoices')} /> */}
 
-      <CardHeader
-        action={
-          <Button variant="contained" color="secondary" size="small" onClick={gotoNewInvoice}>
-            {t('invoices.newInvoice')}
-          </Button>
-        }
-        title={<SectionTitle label={t('invoices.invoices')} />}
-        style={{ marginBottom: '30px' }}
-      />
+        <CardHeader
+          action={
+            <Button variant="contained" color="secondary" size="small" onClick={this.gotoNewInvoice}>
+              {t('invoices.newInvoice')}
+            </Button>
+          }
+          title={<SectionTitle label={t('invoices.invoices')} />}
+          style={{ marginBottom: '30px' }}
+        />
 
-      <InvoicesList invoices={invoices} />
-    </Content>
-  );
+        <InvoicesList invoices={invoices} />
+      </Content>
+    );
+  }
 }
 
+InvoicesPage.propTypes = {
+  invoices: PropTypes.array,
+  getInvoices: PropTypes.func.isRequired,
+};
+
+InvoicesPage.defaultProps = {
+  invoices: [],
+};
+
+const mapStateToProps = state => ({
+  invoices: state.invoices.invoices,
+});
+
 export default translate()(
-  InvoicesPage,
+  connect(mapStateToProps, InvoicesActions)(
+    InvoicesPage,
+  ),
 );

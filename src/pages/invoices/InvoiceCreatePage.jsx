@@ -1,5 +1,8 @@
+import ContentEditable from 'react-contenteditable';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 
 import {
@@ -7,6 +10,7 @@ import {
   Chip,
   Divider,
   FormControl,
+  IconButton,
   InputBase,
   NativeSelect,
   Table,
@@ -16,14 +20,17 @@ import {
   TableRow,
   withStyles,
 } from '@material-ui/core';
-import Content from 'components/content/Content';
+import CloseIcon from '@material-ui/icons/Close';
 
 import AppConfig from 'AppConfig';
 import Button from '../../components/form/Button';
 import ColorPicker from 'components/invoices/ColorPicker';
+import Content from 'components/content/Content';
 import Doc from '../../utils/doc';
 import PdfContainer from '../../components/invoices/PdfContainer';
 import SectionTitle from '../../components/content/SectionTitle';
+import * as InvoicesActions from '../../redux/actions/invoices';
+import { invoicesDB } from '../../firebase';
 
 import '../../stylesheets/invoice.scss';
 
@@ -65,9 +72,10 @@ const StyledTableCell = withStyles(theme => ({
     borderLeft: '2px solid #fff',
     borderRight: '2px solid #fff',
     borderBottom: 0,
+    verticalAlign: 'top',
     '&:not(.description)': {
       width: '100px',
-    }
+    },
   },
 }))(TableCell);
 
@@ -117,6 +125,29 @@ class InvoiceCreatePage extends Component {
   };
 
   invoiceDiv = null;
+
+  constructor(props) {
+    super(props);
+
+    this.getInvoice();
+  }
+
+  getInvoice = async () => {
+
+    const { currentUser } = this.props;
+    const { match } = this.props;
+
+    const invoiceId = match.params.id;
+
+    const invoice = await invoicesDB.getInvoice(currentUser.uid, invoiceId);
+
+    this.setState({
+      invoice: {
+        ...invoice.data(),
+        id: invoiceId,
+      },
+    });
+  };
 
   createPdf = (html) => {
     console.log('html', html);
@@ -169,10 +200,18 @@ class InvoiceCreatePage extends Component {
     this.setState({ invoice });
   };
 
+  deleteInvoiceLine = (index) => {
+    const { invoice } = this.state;
+    invoice.lines.splice(index, 1);
+    this.setState({ invoice });
+  }
+
   saveInvoice = () => {
     const { invoice } = this.state;
+    const { saveInvoice } = this.props;
     invoice.status = AppConfig.invoiceStates.SAVED;
 
+    saveInvoice(invoice);
     this.setState({ invoice });
   };
 
@@ -205,15 +244,16 @@ class InvoiceCreatePage extends Component {
           <div id="invoice" className={classes.page} ref={ref => this.invoiceDiv = ref}>
             <div className="invoiceEditorHeader">
               <div className="invoiceEditorEmitter">
-                <div className="logoWrapper fakeInput">
+                <div className="logoWrapper">
                   <img src={require('../../assets/images/Weekyn_logo.png')} />
                 </div>
 
-                <textarea
+                <ContentEditable
                   className="emitterInfos fakeInput"
                   placeholder="Infos emetteur"
-                  value={invoice.emitterInfos}
-                  onChange={(e) => this.handleInvoiceInputChange('emitterInfos', e.target.value)}
+                  html={invoice.emitterInfos} // innerHTML of the editable div
+                  disabled={false}       // use true to disable editing
+                  onChange={(e) => this.handleInvoiceInputChange('emitterInfos', e.target.value)} // handle innerHTML change
                 />
               </div>
 
@@ -309,12 +349,12 @@ class InvoiceCreatePage extends Component {
 
                 <TableBody style={{ paddingTop: '10px' }}>
                   {invoice.lines.map((line, lineIndex) => (
-                    <StyledTableRow key={lineIndex}>
+                    <StyledTableRow key={lineIndex} style={{ position: 'relative' }}>
                       <StyledTableCell className="description" scope="row">
-                        <input
-                          className="fakeInput description"
+                        <ContentEditable
+                          className="fakeInput"
                           placeholder="Description"
-                          value={line.description}
+                          html={line.description}
                           onChange={(e) => this.handleInvoiceLineChange(lineIndex, 'description', e.target.value)}
                           style={{ width: '100%' }}
                         />
@@ -356,7 +396,15 @@ class InvoiceCreatePage extends Component {
                           </NativeSelect>
                         </FormControl>
                       </StyledTableCell>
-                      <StyledTableCell align="right">{line.totalExclTax}</StyledTableCell>
+                      <StyledTableCell align="right">
+                        {line.totalExclTax}
+
+                        {(lineIndex > 0 || invoice.lines.length > 1) && (
+                          <IconButton aria-label="delete" style={{ position: 'absolute', right: '-32px' }} size="small" onClick={() => this.deleteInvoiceLine(lineIndex)}>
+                            <CloseIcon fontSize="inherit" />
+                          </IconButton>
+                        )}
+                      </StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -394,8 +442,19 @@ class InvoiceCreatePage extends Component {
   }
 }
 
+InvoiceCreatePage.propTypes = {
+  currentUser: PropTypes.object.isRequired,
+  saveInvoice: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  currentUser: state.users.authUser,
+});
+
 export default withStyles(styles)(
   translate()(
-    InvoiceCreatePage,
+    connect(mapStateToProps, InvoicesActions)(
+      InvoiceCreatePage,
+    ),
   ),
 );

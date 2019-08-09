@@ -1,10 +1,12 @@
 import { all, fork } from 'redux-saga/effects';
 
-import clientsSaga from '../sagas/clients';
-import projectsSaga from '../sagas/projects';
+import clientsSaga from './clients';
+import invoicesSaga from './invoices';
+import projectsSaga from './projects';
 
 const sagas = [
   clientsSaga,
+  invoicesSaga,
   projectsSaga,
 ];
 

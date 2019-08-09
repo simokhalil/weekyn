@@ -181,6 +181,7 @@ class AppContainer extends React.Component {
               <Route path={AppConfig.routePaths.activity} exact component={ActivityReportPage} />
 
               <Route path={AppConfig.routePaths.invoices} exact component={InvoicesPage} />
+              <Route path={AppConfig.routePaths.invoice} exact component={InvoiceCreatePage} />
               <Route path={AppConfig.routePaths.newInvoice} exact component={InvoiceCreatePage} />
 
               <Route path="**" component={NotFoundPage} />
