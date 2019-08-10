@@ -10,10 +10,10 @@ class DocService {
 
     html2canvas(element, { width: divWidth, height: divHeight })
       .then((canvas) => {
-        document.body.appendChild(canvas);
+        // document.body.appendChild(canvas);
         // console.log('canvas', canvas);
         let imgstring = canvas.toDataURL("image/png");
-        let pdf = new jsPDF('p', 'px', 'a4');
+        let pdf = new jsPDF('p', 'px', 'a4', true);
 
         if (element) {
           console.log('elemeent ok');
@@ -22,7 +22,7 @@ class DocService {
           height = ratio * width;
           // pdf.deletePage(1);
           // pdf.addPage(width, height);
-          pdf.addImage(imgstring, 'PNG', 0, 0, width, height);
+          pdf.addImage(imgstring, 'PNG', 0, 0, width, height, '', 'FAST');
           console.log('downloading...');
           // pdf.save("download.pdf");
           // pdf.output('dataurlnewwindow');

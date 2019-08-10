@@ -53,6 +53,10 @@
       }
     }
 
+    button {
+      visibility: hidden;
+    }
+
     .ButtonAddLine {
       opacity: 0;
     }
@@ -124,6 +128,13 @@
         flex-direction: column;
         width: 340px;
         position: relative;
+
+        &.selectedClient > span {
+          display: block;
+          padding: 5px 9px;
+          line-height: 20px;
+          border-top: 1px solid #fff;
+        }
       }
     }
   }

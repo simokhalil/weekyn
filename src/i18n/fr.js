@@ -100,4 +100,9 @@ export default {
       [AppConfig.invoiceStates.SENT]: 'Facture N° %{number}',
     },
   },
+
+  settings: {
+    settings: 'Paramètres',
+    general: 'Général',
+  }
 };

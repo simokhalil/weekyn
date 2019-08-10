@@ -9,7 +9,9 @@ import AppConfig from '../../AppConfig';
 import HeaderBar from '../layout/HeaderBar';
 import NotFoundPage from '../../pages/errors/NotFoundPage';
 import SideMenu from '../layout/sidebar/Sidebar';
+import * as ClientsActions from '../../redux/actions/clients';
 import { db, firebase } from '../../firebase';
+import { store } from '../../redux/store';
 
 import ActivityReportPage from 'pages/activity-report/ActivityReportPage';
 import ClientAddPage from 'pages/clients/ClientAddPage';
@@ -19,6 +21,7 @@ import ClientsListPage from 'pages/clients/ClientsListPage';
 import Homepage from 'pages/homepage/Homepage';
 import InvoiceCreatePage from 'pages/invoices/InvoiceCreatePage';
 import InvoicesPage from 'pages/invoices/InvoicesPage';
+import SettingsPage from 'pages/settings/SettingsPage';
 
 const styles = theme => {
   console.log(theme.palette);
@@ -63,7 +66,9 @@ class AppContainer extends React.Component {
   userAuthStateChangedUnsubscribe = null;
 
   componentDidMount() {
-    const { dispatch, history, location } = this.props;
+    const { getClients, history, location } = this.props;
+
+    console.log('this.props', this.props);
 
     this.userAuthStateChangedUnsubscribe = firebase.auth.onAuthStateChanged((authUser) => {
       if (authUser) {
@@ -75,10 +80,12 @@ class AppContainer extends React.Component {
         }
         this.setState(() => ({ authUser: infos, isLoading: false }));
 
-        dispatch({
+        store.dispatch({
           type: 'USER_SIGNED_IN',
           data: { ...infos },
         });
+
+        getClients();
 
         db.onceGetUser(infos.uid)
           .then(userData => {
@@ -90,7 +97,7 @@ class AppContainer extends React.Component {
 
             console.log('got user data : ', userData);
 
-            dispatch({
+            store.dispatch({
               type: 'USER_SIGNED_IN',
               data: { ...infos },
             });
@@ -99,7 +106,7 @@ class AppContainer extends React.Component {
 
         console.log('this.props', this.props);
 
-        dispatch({
+        store.dispatch({
           type: 'USER_SIGNED_OUT',
           data: {
             redirectTo: location.pathname,
@@ -181,8 +188,10 @@ class AppContainer extends React.Component {
               <Route path={AppConfig.routePaths.activity} exact component={ActivityReportPage} />
 
               <Route path={AppConfig.routePaths.invoices} exact component={InvoicesPage} />
-              <Route path={AppConfig.routePaths.invoice} exact component={InvoiceCreatePage} />
               <Route path={AppConfig.routePaths.newInvoice} exact component={InvoiceCreatePage} />
+              <Route path={AppConfig.routePaths.invoice} exact component={InvoiceCreatePage} />
+
+              <Route path={AppConfig.routePaths.settings} exact component={SettingsPage} />
 
               <Route path="**" component={NotFoundPage} />
             </Switch>
@@ -209,7 +218,7 @@ const mapStateToProps = state => ({
 });
 
 export default withStyles(styles, { withTheme: true })(
-  connect(mapStateToProps)(
-    AppContainer
-  )
+  connect(mapStateToProps, ClientsActions)(
+    AppContainer,
+  ),
 );

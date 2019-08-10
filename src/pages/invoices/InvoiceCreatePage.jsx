@@ -23,6 +23,7 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 
 import AppConfig from 'AppConfig';
+import Autocomplete from 'components/form/Autocomplete';
 import Button from '../../components/form/Button';
 import ColorPicker from 'components/invoices/ColorPicker';
 import Content from 'components/content/Content';
@@ -97,6 +98,14 @@ const INITIAL_INVOICE_LINE = {
   totalExclTax: 0,
 };
 
+const INITIAL_INVOICE_CLIENT = {
+  name: '',
+  address: '',
+  postalCode: '',
+  city: '',
+  country: '',
+}
+
 const INITIAL_INVOICE_STATE = {
   invoice: {
     status: AppConfig.invoiceStates.DRAFT,
@@ -108,15 +117,10 @@ const INITIAL_INVOICE_STATE = {
     title: '',
     totalExclTax: 0,
     totalInclTax: 0,
-    client: {
-      name: '',
-      address: '',
-      postalCode: '',
-      city: '',
-      country: '',
-    },
+    client: { ...INITIAL_INVOICE_CLIENT },
     lines: [{ ...INITIAL_INVOICE_LINE }],
   },
+  isClientSelected: false,
 };
 
 class InvoiceCreatePage extends Component {
@@ -126,10 +130,17 @@ class InvoiceCreatePage extends Component {
 
   invoiceDiv = null;
 
-  constructor(props) {
-    super(props);
-
+  componentDidMount() {
     this.getInvoice();
+  }
+
+  componentWillUnmount() {
+    console.log('componentWillUnmount');
+    this.setState({
+      ...INITIAL_INVOICE_STATE,
+    }, () => {
+        console.log('componentWillUnmount : invoice', this.state.invoice);
+    });
   }
 
   getInvoice = async () => {
@@ -139,14 +150,16 @@ class InvoiceCreatePage extends Component {
 
     const invoiceId = match.params.id;
 
-    const invoice = await invoicesDB.getInvoice(currentUser.uid, invoiceId);
+    if (invoiceId) {
+      const invoice = await invoicesDB.getInvoice(currentUser.uid, invoiceId);
 
-    this.setState({
-      invoice: {
-        ...invoice.data(),
-        id: invoiceId,
-      },
-    });
+      this.setState({
+        invoice: {
+          ...invoice.data(),
+          id: invoiceId,
+        },
+      });
+    }
   };
 
   createPdf = (html) => {
@@ -166,6 +179,28 @@ class InvoiceCreatePage extends Component {
     invoice.client[field] = value;
     this.setState({ invoice });
   };
+
+  handleClientSelect = (client) => {
+    const { invoice } = this.state;
+    /* const { clients } = this.props;
+    const selectedClient = clients.find(client => client.id === clientId); */
+
+    invoice.client = client;
+
+    this.setState({
+      invoice,
+      isClientSelected: true,
+    });
+  };
+
+  handleUnselectClient = () => {
+    const { invoice } = this.state;
+    invoice.client = { ...INITIAL_INVOICE_CLIENT };
+    this.setState({
+      invoice,
+      isClientSelected: false,
+    });
+  }
 
   handleInvoiceLineChange = (lineIndex, field, value) => {
     const { invoice } = this.state;
@@ -216,8 +251,10 @@ class InvoiceCreatePage extends Component {
   };
 
   render() {
-    const { invoice } = this.state;
-    const { classes, t } = this.props;
+    const { invoice, isClientSelected } = this.state;
+    const { classes, clients, t } = this.props;
+
+    console.log('create invoice', invoice);
 
     return (
       <Content>
@@ -258,41 +295,57 @@ class InvoiceCreatePage extends Component {
               </div>
 
               <div className="invoiceEditorCustomer">
-                <div className="invoiceEditorCustomerWrapper">
-                  <input
-                    className="fakeInput"
-                    placeholder="Client"
-                    value={invoice.client.name}
-                    onChange={(e) => this.handleClientInputChange('name', e.target.value)}
-                  />
-                  <input
-                    className="fakeInput"
-                    placeholder="Adresse"
-                    value={invoice.client.address}
-                    onChange={(e) => this.handleClientInputChange('address', e.target.value)}
-                  />
-                  <div style={{ display: 'flex' }}>
-                    <input
-                      className="fakeInput"
-                      placeholder="CP"
-                      value={invoice.client.postalCode}
-                      onChange={(e) => this.handleClientInputChange('postalCode', e.target.value)}
-                      style={{ width: '80px' }}
-                    />
-                    <input
-                      className="fakeInput"
-                      placeholder="Ville"
-                      value={invoice.client.city}
-                      onChange={(e) => this.handleClientInputChange('city', e.target.value)}
-                      style={{ flex: 1 }}
-                    />
-                  </div>
-                  <input
-                    className="fakeInput"
-                    placeholder="Pays"
-                    value={invoice.client.country}
-                    onChange={(e) => this.handleClientInputChange('country', e.target.value)}
-                  />
+                <div className={classNames('invoiceEditorCustomerWrapper', { 'selectedClient': !!invoice.client.id }, { fakeInput: !!invoice.client.id })}>
+                  {!!invoice.client.id && (
+                    <>
+                      <span>{invoice.client.name}</span>
+                      <span>{invoice.client.address}</span>
+                      <span>{invoice.client.postalCode} {invoice.client.city}</span>
+                      <span>{invoice.client.country}</span>
+                      <IconButton aria-label="delete" style={{ position: 'absolute', right: '5px', top: '5px' }} size="small" onClick={() => this.handleUnselectClient()}>
+                        <CloseIcon fontSize="inherit" />
+                      </IconButton>
+                    </>
+                  )}
+
+                  {!invoice.client.id && (
+                    <>
+                      <Autocomplete
+                        items={clients}
+                        placeholder="Client"
+                        onChange={(e) => this.handleClientInputChange('name', e)}
+                        onSelect={(client) => this.handleClientSelect(client)}
+                      />
+                      <input
+                        className="fakeInput"
+                        placeholder="Adresse"
+                        value={invoice.client.address}
+                        onChange={(e) => this.handleClientInputChange('address', e.target.value)}
+                      />
+                      <div style={{ display: 'flex' }}>
+                        <input
+                          className="fakeInput"
+                          placeholder="CP"
+                          value={invoice.client.postalCode}
+                          onChange={(e) => this.handleClientInputChange('postalCode', e.target.value)}
+                          style={{ width: '80px' }}
+                        />
+                        <input
+                          className="fakeInput"
+                          placeholder="Ville"
+                          value={invoice.client.city}
+                          onChange={(e) => this.handleClientInputChange('city', e.target.value)}
+                          style={{ flex: 1 }}
+                        />
+                      </div>
+                      <input
+                        className="fakeInput"
+                        placeholder="Pays"
+                        value={invoice.client.country}
+                        onChange={(e) => this.handleClientInputChange('country', e.target.value)}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -444,11 +497,17 @@ class InvoiceCreatePage extends Component {
 
 InvoiceCreatePage.propTypes = {
   currentUser: PropTypes.object.isRequired,
+  clients: PropTypes.array,
   saveInvoice: PropTypes.func.isRequired,
+};
+
+InvoiceCreatePage.defaultProps = {
+  clients: [],
 };
 
 const mapStateToProps = state => ({
   currentUser: state.users.authUser,
+  clients: state.clients.clients,
 });
 
 export default withStyles(styles)(
