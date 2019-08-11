@@ -8,7 +8,7 @@ class DocService {
 
     const ratio = divHeight / divWidth;
 
-    html2canvas(element, { width: divWidth, height: divHeight })
+    html2canvas(element, { width: divWidth, height: divHeight, allowTaint: true, useCORS: true })
       .then((canvas) => {
         // document.body.appendChild(canvas);
         // console.log('canvas', canvas);
