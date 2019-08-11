@@ -39,7 +39,7 @@ db.settings(settings);
 
 db.enablePersistence();
 
-const storage = firebase.storage();
+const storage = firebase.storage().ref();
 
 export {
   auth,

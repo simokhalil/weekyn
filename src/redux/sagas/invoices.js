@@ -1,5 +1,5 @@
 import { eventChannel } from 'redux-saga';
-import { call, cancelled, put, take, takeLatest } from 'redux-saga/effects';
+import { call, cancelled, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
 
 import { invoicesDB, firebase } from '../../firebase/';
 import { store } from '../store';
@@ -33,7 +33,14 @@ export function* getInvoicesSaga(action) {
 
   const channel = yield call(subscribeToInvoices, currentUser.uid);
 
-  try {
+  yield takeEvery(channel, function* (invoices) {
+    yield put({ type: 'INVOICES_SET_REDUX', payload: { invoices } });
+  });
+
+  yield take('FETCH_INVOICES_CANCEL')
+  channel.close();
+
+  /* try {
     while (true) {
       const invoices = yield take(channel);
 
@@ -45,7 +52,7 @@ export function* getInvoicesSaga(action) {
     if (yield cancelled()) {
       channel.close();
     }
-  }
+  } */
 }
 
 export function* saveInvoiceSaga(action) {

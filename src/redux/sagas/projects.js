@@ -1,4 +1,4 @@
-import { call, cancelled, put, take, takeLatest } from 'redux-saga/effects';
+import { call, cancelled, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 
 import { projectsDB, firebase } from '../../firebase/';
@@ -38,7 +38,15 @@ export function* getProjectsSaga(action) {
 
   const channel = yield call(subscribeToProjects, currentUser.uid, action.payload.clientId, action.payload.active);
 
-  try {
+  yield takeEvery(channel, function* (projects) {
+    yield put({ type: 'PROJECTS_SET_REDUX', payload: { projects } });
+    yield put({ type: 'SET_PROJECT_LINES' });
+  });
+
+  yield take('GET_PROJECTS_CANCEL')
+  channel.close();
+
+  /* try {
     while (true) {
       const projects = yield take(channel);
       yield put({ type: 'PROJECTS_SET_REDUX', payload: { projects } });
@@ -48,7 +56,7 @@ export function* getProjectsSaga(action) {
     if (yield cancelled()) {
       channel.close();
     }
-  }
+  } */
 }
 
 /**

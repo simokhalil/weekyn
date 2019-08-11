@@ -10,7 +10,7 @@ import HeaderBar from '../layout/HeaderBar';
 import NotFoundPage from '../../pages/errors/NotFoundPage';
 import SideMenu from '../layout/sidebar/Sidebar';
 import * as ClientsActions from '../../redux/actions/clients';
-import { db, firebase } from '../../firebase';
+import { userDB, firebase } from '../../firebase';
 import { store } from '../../redux/store';
 
 import ActivityReportPage from 'pages/activity-report/ActivityReportPage';
@@ -71,6 +71,7 @@ class AppContainer extends React.Component {
     console.log('this.props', this.props);
 
     this.userAuthStateChangedUnsubscribe = firebase.auth.onAuthStateChanged((authUser) => {
+      console.log('AppContainer : Got authUser', authUser);
       if (authUser) {
         let infos = {
           email: authUser.email,
@@ -87,7 +88,7 @@ class AppContainer extends React.Component {
 
         getClients();
 
-        db.onceGetUser(infos.uid)
+        userDB.onceGetUser(infos.uid)
           .then(userData => {
             userData = userData.data();
             infos = {
@@ -101,10 +102,30 @@ class AppContainer extends React.Component {
               type: 'USER_SIGNED_IN',
               data: { ...infos },
             });
+
+            store.dispatch({
+              type: 'GET_USER_SAGA',
+            });
           })
       } else {
 
         console.log('this.props', this.props);
+
+        store.dispatch({
+          type: 'GET_USER_CANCEL',
+        });
+
+        store.dispatch({
+          type: 'FETCH_CLIENTS_CANCEL',
+        });
+
+        store.dispatch({
+          type: 'FETCH_INVOICES_CANCEL',
+        });
+
+        store.dispatch({
+          type: 'GET_PROJECTS_CANCEL',
+        });
 
         store.dispatch({
           type: 'USER_SIGNED_OUT',
@@ -115,9 +136,9 @@ class AppContainer extends React.Component {
 
         console.log('user not logged in => redirecting from ', this.props);
 
-        history.push(AppConfig.routePaths.login);
-
         this.setState(() => ({ authUser: null, isLoading: false }));
+
+        history.push(AppConfig.routePaths.login);
       }
     });
 
@@ -142,6 +163,9 @@ class AppContainer extends React.Component {
     const mainContent = document.getElementById('mainContent');
     if (mainContent) {
       mainContent.removeEventListener('scroll', this.handleScroll);
+      if (this.unlisten) {
+        this.unlisten();
+      }
     }
 
     if (this.userAuthStateChangedUnsubscribe) {

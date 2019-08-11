@@ -32,6 +32,7 @@ import PdfContainer from '../../components/invoices/PdfContainer';
 import SectionTitle from '../../components/content/SectionTitle';
 import * as InvoicesActions from '../../redux/actions/invoices';
 import { invoicesDB } from '../../firebase';
+import { storage } from '../../firebase/firebase';
 
 import '../../stylesheets/invoice.scss';
 
@@ -106,41 +107,47 @@ const INITIAL_INVOICE_CLIENT = {
   country: '',
 }
 
-const INITIAL_INVOICE_STATE = {
-  invoice: {
-    status: AppConfig.invoiceStates.DRAFT,
-    number: '',
-    color: '#0693E3',
-    emitterInfos: 'Khalil\r\nkhalil@kelyo.fr',
-    emissionDate: '',
-    dueDate: '',
-    title: '',
-    totalExclTax: 0,
-    totalInclTax: 0,
-    client: { ...INITIAL_INVOICE_CLIENT },
-    lines: [{ ...INITIAL_INVOICE_LINE }],
-  },
-  isClientSelected: false,
-};
-
 class InvoiceCreatePage extends Component {
-  state = {
-    ...INITIAL_INVOICE_STATE,
-  };
 
   invoiceDiv = null;
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      invoice: {
+        status: AppConfig.invoiceStates.DRAFT,
+        number: '',
+        color: (props.currentUser && props.currentUser.settings && props.currentUser.settings.defaultColor) || '#1E76CC',
+        emitterInfos: (props.currentUser && props.currentUser.settings && props.currentUser.settings.emitterInfo) || '',
+        emissionDate: '',
+        dueDate: '',
+        title: '',
+        totalExclTax: 0,
+        totalInclTax: 0,
+        client: { ...INITIAL_INVOICE_CLIENT },
+        lines: [{ ...INITIAL_INVOICE_LINE }],
+      },
+    };
+
+    if (props.currentUser && props.currentUser.settings && props.currentUser.settings.logoId) {
+      this.getUserSettings(props.currentUser.settings);
+    }
+  }
 
   componentDidMount() {
     this.getInvoice();
   }
 
-  componentWillUnmount() {
-    console.log('componentWillUnmount');
-    this.setState({
-      ...INITIAL_INVOICE_STATE,
-    }, () => {
-        console.log('componentWillUnmount : invoice', this.state.invoice);
-    });
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.currentUser
+      && nextProps.currentUser.settings
+      && (!this.props.currentUser || !this.props.currentUser.settings)
+    ) {
+      console.log('nextProps.currentUser.settings', nextProps.currentUser.settings);
+      this.getUserSettings(nextProps.currentUser.settings);
+    }
   }
 
   getInvoice = async () => {
@@ -162,11 +169,25 @@ class InvoiceCreatePage extends Component {
     }
   };
 
+  getUserSettings = async (settings) => {
+    const { invoice } = this.state;
+
+    if (settings.logoId) {
+      invoice.logoUrl = await storage
+        .child('logos/' + settings.logoId)
+        .getDownloadURL();
+    }
+
+    invoice.emitterInfos = settings.emitterInfo;
+    invoice.color = settings.defaultColor;
+
+    this.setState({ invoice });
+
+  };
+
   createPdf = (html) => {
-    console.log('html', html);
-    console.log('invoiceDiv', this.invoiceDiv);
     Doc.html2pdf(html);
-  }
+  };
 
   handleInvoiceInputChange = (field, value) => {
     const { invoice } = this.state;
@@ -251,10 +272,8 @@ class InvoiceCreatePage extends Component {
   };
 
   render() {
-    const { invoice, isClientSelected } = this.state;
+    const { invoice } = this.state;
     const { classes, clients, t } = this.props;
-
-    console.log('create invoice', invoice);
 
     return (
       <Content>
@@ -281,9 +300,11 @@ class InvoiceCreatePage extends Component {
           <div id="invoice" className={classes.page} ref={ref => this.invoiceDiv = ref}>
             <div className="invoiceEditorHeader">
               <div className="invoiceEditorEmitter">
-                <div className="logoWrapper">
-                  <img src={require('../../assets/images/Weekyn_logo.png')} />
-                </div>
+                {!!invoice.logoUrl && (
+                  <div className="logoWrapper">
+                    <img src={invoice.logoUrl} />
+                  </div>
+                )}
 
                 <ContentEditable
                   className="emitterInfos fakeInput"
@@ -392,11 +413,11 @@ class InvoiceCreatePage extends Component {
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell className="description" style={{ backgroundColor: invoice.color }}>Description</StyledTableCell>
-                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color }}>Quantité</StyledTableCell>
-                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color }}>Prix unitaire</StyledTableCell>
-                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color }}>TVA</StyledTableCell>
-                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color }}>Prix HT</StyledTableCell>
+                    <StyledTableCell className="description" style={{ backgroundColor: invoice.color}}>Description</StyledTableCell>
+                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color}}>Quantité</StyledTableCell>
+                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color}}>Prix unitaire</StyledTableCell>
+                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color}}>TVA</StyledTableCell>
+                    <StyledTableCell align="center" style={{ backgroundColor: invoice.color}}>Prix HT</StyledTableCell>
                   </TableRow>
                 </TableHead>
 

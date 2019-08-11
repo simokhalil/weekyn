@@ -1,0 +1,22 @@
+.filepond--root {
+	width:170px;
+	margin: 0 auto;
+}
+
+.settingsItem {
+  margin: 0 auto 70px 30px;
+}
+
+.emitterInfo {
+  display: block;
+  width: 70%;
+  margin: auto;
+  border-radius: 5px;
+  border: 1px solid #b9c6d4;
+  resize: none;
+  overflow: hidden;
+  padding: 8px 12px;
+  line-height: 2;
+  transition: border-color .2s;
+  font-size: 0.9rem;
+}

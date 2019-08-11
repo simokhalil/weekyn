@@ -13,9 +13,15 @@ import AppConfig from '../../AppConfig';
 import CustomInput from '../../components/form/Input';
 import GridContainer from '../../components/layout/GridContainer';
 import GridItem from '../../components/layout/GridItem';
-import { auth, db } from '../../firebase';
+import { auth, userDB } from '../../firebase';
 
 import '../../stylesheets/login.scss';
+
+const INITIAL_SETTINGS = {
+  logoId: null,
+  emitterInfo: '',
+  defaultColor: '#0693E3',
+};
 
 const INITIAL_STATE = {
   name: '',
@@ -90,7 +96,7 @@ class SignupPage extends React.Component {
       console.log('created user : ', authUser);
 
       try {
-        await db.doCreateUser(authUser.user.uid, name, email);
+        await userDB.doCreateUser(authUser.user.uid, name, email, { ...INITIAL_SETTINGS });
         this.setState(() => ({ ...INITIAL_STATE }));
         history.push(AppConfig.routePaths.login);
 

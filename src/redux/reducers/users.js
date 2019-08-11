@@ -10,6 +10,15 @@ export default function users(state = {}, action) {
         authUser,
       };
 
+    case 'USER_SET_REDUX':
+      return {
+        ...state,
+        authUser: {
+          ...state.authUser,
+          ...action.payload.user,
+        },
+      };
+
     case 'USER_SIGNED_OUT':
       return {
         redirectTo: authUser.redirectTo,

@@ -54,6 +54,8 @@ class ClientsListPage extends Component {
     const { isDeleteConfirmationDialogOpen } = this.state;
     const { classes, clients, t } = this.props;
 
+    console.log('render, clients', clients);
+
     return (
       <Content>
         <ContentToolbar title="Clients" section="clients" />

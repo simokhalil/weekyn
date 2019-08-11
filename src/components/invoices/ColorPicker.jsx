@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import classNames from 'classnames';
 import { TwitterPicker } from 'react-color';
 
 import {
@@ -40,7 +41,7 @@ const ColorPicker = ({ className, color, style, onChange }) => {
   };
 
   return (
-    <div className={className} style={style}>
+    <div className={classNames(classes.root, className)} style={style}>
       <ClickAwayListener onClickAway={handleClickAway}>
         <div>
           <Button onClick={handleClick} className={classes.button} style={{ backgroundColor: color }}><span /></Button>
