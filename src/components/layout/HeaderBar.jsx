@@ -120,7 +120,6 @@ class HeaderBar extends Component {
   };
 
   gotoPage = (path) => {
-    console.log('path : ', path);
     this.props.history.push(path);
   };
 

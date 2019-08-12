@@ -29,9 +29,6 @@ class ClientsListPage extends Component {
 
   componentDidMount() {
     const { getClients } = this.props;
-
-    console.log('list', this.props);
-
     getClients();
   }
 
@@ -53,8 +50,6 @@ class ClientsListPage extends Component {
   render() {
     const { isDeleteConfirmationDialogOpen } = this.state;
     const { classes, clients, t } = this.props;
-
-    console.log('render, clients', clients);
 
     return (
       <Content>

@@ -24,7 +24,7 @@ class Homepage extends React.Component {
   render() {
 
     return (
-      <Content fullWidth>
+      <Content>
 
         <ContentToolbar title="Dashboard" />
 

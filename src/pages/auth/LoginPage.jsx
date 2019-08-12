@@ -29,12 +29,7 @@ class LoginPage extends React.Component {
     ...INITIAL_STATE,
   };
 
-  componentDidMount() {
-    console.log('Login page : props.currentUser', this.props);
-  }
-
   componentWillReceiveProps(newProps) {
-    console.log('Login page new Props : ', newProps, newProps.currentUser);
     if (newProps.currentUser) {
       this.setState(() => ({ ...INITIAL_STATE }));
       this.props.history.push(this.props.redirectTo);
@@ -79,9 +74,7 @@ class LoginPage extends React.Component {
     const { email, password } = this.state;
 
     try {
-      const e = await auth.doSignInWithEmailAndPassword(email, password);
-
-      console.log('login event : ', e);
+      await auth.doSignInWithEmailAndPassword(email, password);
 
       this.props.history.push(AppConfig.routePaths.homepage);
     } catch (error) {
@@ -168,7 +161,6 @@ LoginPage.defaultProps = {
 };
 
 function mapStateToProps(state) {
-  console.log('global state : ', state);
   return {
     currentUser: state.users.authUser,
     redirectTo: state.users.redirectTo,

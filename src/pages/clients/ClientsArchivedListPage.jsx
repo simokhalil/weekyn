@@ -8,7 +8,6 @@ import {
 } from '@material-ui/core';
 
 import AppConfig from 'AppConfig';
-import Button from 'components/form/Button';
 import ClientsList from '../../components/clients/ClientsList';
 import Content from 'components/content/Content';
 import ContentToolbar from 'components/content/ContentToolbar';
@@ -31,8 +30,6 @@ class ClientsListPage extends Component {
   componentDidMount() {
     const { getClients } = this.props;
 
-    console.log('list', this.props);
-
     getClients(false);
   }
 
@@ -52,7 +49,7 @@ class ClientsListPage extends Component {
 
   render() {
     const { isDeleteConfirmationDialogOpen } = this.state;
-    const { classes, clients, t } = this.props;
+    const { clients, t } = this.props;
 
     return (
       <Content>

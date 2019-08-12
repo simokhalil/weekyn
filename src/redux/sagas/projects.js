@@ -1,4 +1,4 @@
-import { call, cancelled, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
+import { call, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 
 import { projectsDB, firebase } from '../../firebase/';

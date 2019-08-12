@@ -1,5 +1,5 @@
 import { eventChannel } from 'redux-saga';
-import { call, cancelled, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
+import { call, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
 
 import { clientsDB, firebase } from '../../firebase/';
 import { store } from '../store';
@@ -16,8 +16,6 @@ function subscribeToClients(userId, active = true) {
         });
       });
 
-      console.log('got clients : ', clients);
-
       emmiter(clients);
     });
 
@@ -26,8 +24,6 @@ function subscribeToClients(userId, active = true) {
 }
 
 export function* getClientsSaga(action) {
-  console.log('getClientsSaga ', action);
-
   const state = store.getState();
   const currentUser = state.users.authUser;
 
@@ -39,20 +35,6 @@ export function* getClientsSaga(action) {
 
   yield take('FETCH_CLIENTS_CANCEL')
   channel.close();
-
-  /* try {
-    while (true) {
-      const clients = yield take(channel);
-
-      console.log('SAGA got clients', clients);
-
-      yield put({ type: 'CLIENTS_SET_REDUX', payload: { clients } });
-    }
-  } finally {
-    if (yield cancelled()) {
-      channel.close();
-    }
-  } */
 }
 
 export function* createClientSaga(action) {

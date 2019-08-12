@@ -5,7 +5,6 @@ import { translate } from 'react-polyglot';
 
 import {
   Avatar,
-  Card,
   CardHeader,
   CardContent,
   List,
@@ -28,7 +27,7 @@ import ProjectsList from 'components/clients/ProjectsList';
 import SectionTitle from 'components/content/SectionTitle';
 import * as DateUtils from '../../utils/date';
 import * as ProjectActions from '../../redux/actions/projects';
-import { clientsDB, projectsDB } from '../../firebase';
+import { clientsDB } from '../../firebase';
 
 const styles = {
   title: {

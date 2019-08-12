@@ -36,12 +36,7 @@ class SignupPage extends React.Component {
     ...INITIAL_STATE,
   };
 
-  componentDidMount() {
-    console.log('Signup page : props.currentUser', this.props);
-  }
-
   componentWillReceiveProps(newProps) {
-    console.log('Signup page new Props : ', newProps, newProps.currentUser);
     if (newProps.currentUser) {
       this.setState(() => ({ ...INITIAL_STATE }));
       this.props.history.push(this.props.redirectTo);
@@ -93,7 +88,6 @@ class SignupPage extends React.Component {
 
     try {
       const authUser = await auth.doCreateUserWithEmailAndPassword(email, password);
-      console.log('created user : ', authUser);
 
       try {
         await userDB.doCreateUser(authUser.user.uid, name, email, { ...INITIAL_SETTINGS });
@@ -190,7 +184,6 @@ SignupPage.defaultProps = {
 };
 
 function mapStateToProps(state) {
-  console.log('global state : ', state);
   return {
     currentUser: state.users.authUser,
     redirectTo: state.users.redirectTo,

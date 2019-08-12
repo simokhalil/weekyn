@@ -2,10 +2,10 @@ import React from 'react';
 
 export default (props) => {
   const bodyRef = React.createRef();
-  const createPdf = () => {
-    console.log('bodyRef', bodyRef);
+  /* const createPdf = () => {
     props.createPdf(bodyRef.current.childNodes[0]);
-  };
+  }; */
+
   return (
     <section className="pdf-container">
       {/* <section className="pdf-toolbar">

@@ -4,7 +4,6 @@ export default function users(state = {}, action) {
 
   switch (action.type) {
     case 'USER_SIGNED_IN':
-      console.log('storing user to store  ', authUser);
       return {
         ...state,
         authUser,

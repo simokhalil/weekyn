@@ -1,4 +1,4 @@
-import { call, cancelled, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
+import { call, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 
 import { userDB, firebase } from '../../firebase/';
@@ -15,7 +15,6 @@ function subscribeToUser(userId) {
 }
 
 export function* getUserSaga(action) {
-  console.log('getUserSaga ', action);
 
   const state = store.getState();
   const currentUser = state.users.authUser;
@@ -28,20 +27,6 @@ export function* getUserSaga(action) {
 
   yield take('GET_USER_CANCEL')
   channel.close();
-
-  /* try {
-    while (true) {
-      const user = yield take(channel);
-
-      console.log('SAGA got user update', user);
-
-      yield put({ type: 'USER_SET_REDUX', payload: { user } });
-    }
-  } finally {
-    if (yield cancelled()) {
-      channel.close();
-    }
-  } */
 }
 
 export function* saveUserSettingsSaga(action) {

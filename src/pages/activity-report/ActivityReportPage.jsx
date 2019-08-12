@@ -6,24 +6,24 @@ import { translate } from 'react-polyglot';
 
 import {
   CardHeader,
-  FormControl,
   IconButton,
-  MenuItem,
-  Select,
   withStyles,
 } from '@material-ui/core';
 
 import ArrowRightIcon from '@material-ui/icons/ArrowForward';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import PdfIcon from '@material-ui/icons/PictureAsPdfOutlined';
 
 import Button from '../../components/form/Button';
 import Content from 'components/content/Content';
 import SectionTitle from '../../components/content/SectionTitle';
+import * as InvoicesActions from '../../redux/actions/invoices';
 import * as ProjectsActions from '../../redux/actions/projects';
 
 import 'moment/locale/fr';
 import ProjectsListDialog from 'components/activity/ProjectsListDialog';
+import AppConfig from 'AppConfig';
 
 moment.locale('fr');
 const cellWidth = '40px';
@@ -159,18 +159,21 @@ class ActivityReportPage extends React.Component {
     saveProjectActivity(projectLineIndex);
   };
 
-  // TODO
-  setAllDays = () => {
+  setAllDays = (projectIndex) => {
     const { monthLength } = this.state;
-    const values = {}
+    const { currentMonthIndex, currentYear, projectLines, setProjectLineDayActivity } = this.props;
+
+    projectLines[projectIndex].activity = projectLines[projectIndex].activity || {};
+    projectLines[projectIndex].activity[currentYear] = projectLines[projectIndex].activity[currentYear] || {};
+    projectLines[projectIndex].activity[currentYear][currentMonthIndex] = projectLines[projectIndex].activity[currentYear][currentMonthIndex] || {};
 
     for (let i = 0; i < monthLength; i++) {
       if (!this.isWeekend(i + 1)) {
-        values[i] = 1;
+        projectLines[projectIndex].activity[currentYear][currentMonthIndex][i] = 1;
       }
     }
 
-    this.setState({ values });
+    setProjectLineDayActivity(projectLines);
   };
 
   openProjectsListDialog = () => {
@@ -188,17 +191,18 @@ class ActivityReportPage extends React.Component {
   };
 
   getFilteredProjectsList = () => {
-    const { projects, projectLines } = this.props;
+    const { clients, projects, projectLines } = this.props;
 
     return projects.filter((project) => {
       return projectLines.findIndex((projectLine) => projectLine.id === project.id) === -1;
+    }).map((project) => {
+      project.client = clients.find((client) => client.id === project.clientId)
+      return project;
     });
   };
 
   setDayActivity = (projectIndex, dayIndex, value) => {
-    const { projectLines, setProjectLineDayActivity } = this.props;
-
-    const { currentMonthIndex, currentYear } = this.props;
+    const { currentMonthIndex, currentYear, projectLines, setProjectLineDayActivity } = this.props;
 
     projectLines[projectIndex].activity = projectLines[projectIndex].activity || {};
     projectLines[projectIndex].activity[currentYear] = projectLines[projectIndex].activity[currentYear] || {};
@@ -208,11 +212,69 @@ class ActivityReportPage extends React.Component {
     setProjectLineDayActivity(projectLines);
   };
 
-  render() {
-    const { currentMonth, maxMonthIndex, isProjectsListDialogOpen, monthLength } = this.state;
-    const { classes, currentMonthIndex, currentYear, t, projects, projectLines } = this.props;
+  getProjectTotalDays = (projectLine) => {
+    const { monthLength } = this.state;
+    const { currentMonthIndex, currentYear } = this.props;
 
     const daysArray = [...Array(monthLength).keys()];
+
+    return daysArray.reduce((total, day) => {
+      return total + (projectLine.activity[currentYear][currentMonthIndex][day] || 0);
+    }, 0, 0);
+  }
+
+  makeInvoice = (projectLine) => {
+    const { monthLength } = this.state;
+    const { currentUser, currentMonthIndex, currentYear, saveInvoice } = this.props;
+
+    const daysArray = [...Array(monthLength).keys()];
+
+    const totalDays = daysArray.reduce((total, day) => {
+      return total + (projectLine.activity[currentYear][currentMonthIndex][day] || 0);
+    }, 0, 0);
+
+    const totalAmount = projectLine.tjm * totalDays;
+
+    const invoice = {
+      status: AppConfig.invoiceStates.SAVED,
+      number: 2,
+      color: currentUser.settings.defaultColor,
+      emitterInfos: currentUser.settings.emitterInfo,
+      emissionDate: moment().format('DD/MM/YYYY'),
+      dueDate: moment().add('1 days').format('DD/MM/YYYY'),
+      title: projectLine.name,
+      totalExclTax: totalAmount,
+      totalInclTax: totalAmount * 1.2,
+      client: {
+        name: 'Generated - Name',
+        address: 'Generated - Address',
+        postalCode: '44000',
+        city: 'Thouaré',
+        country: 'France',
+      },
+      lines: [{
+        description: projectLine.name,
+        priceExclTax: projectLine.tjm,
+        tax: 20,
+        quantity: totalDays,
+        totalExclTax: totalAmount,
+      }],
+    };
+
+    saveInvoice(invoice);
+  }
+
+  render() {
+    const { currentMonth, maxMonthIndex, isProjectsListDialogOpen, monthLength } = this.state;
+    const { classes, clients, currentMonthIndex, currentYear, t, projectLines } = this.props;
+
+    const daysArray = [...Array(monthLength).keys()];
+
+    if (!clients || !clients.length) {
+      return (
+        <div>No clients </div>
+      )
+    }
 
     return (
       <Content fullWidth>
@@ -225,22 +287,6 @@ class ActivityReportPage extends React.Component {
           }
           title={<SectionTitle label="CRA" />}
         />
-
-        <div style={{ display: 'inline-block', width: '200px' }}>
-          <FormControl className={classes.formControl}>
-            <Select
-              value={10}
-              onChange={this.handleChange}
-              inputProps={{
-                name: 'age',
-                id: 'age-simple',
-              }}
-            >
-              <MenuItem value={10}>Mois</MenuItem>
-              <MenuItem value={20}>Semaine</MenuItem>
-            </Select>
-          </FormControl>
-        </div>
 
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px auto' }}>
           <IconButton aria-label="delete" className={classes.margin} onClick={this.subtractMonth}>
@@ -259,6 +305,7 @@ class ActivityReportPage extends React.Component {
             <tr>
               <>
                 <td className={classes.tableFirstCol}>Clients / Projets</td>
+                <td className={classes.tableCol}>FA</td>
                 <td className={classes.tableCol} />
                 <td className={classes.tableCol}>Tot</td>
 
@@ -284,13 +331,19 @@ class ActivityReportPage extends React.Component {
                   </td>
 
                   <td className={classes.tableCol}>
-                    <IconButton aria-label="delete" size="small" onClick={this.setAllDays}>
+                    <IconButton aria-label="delete" size="small" onClick={() => this.makeInvoice(projectLine)}>
+                      <PdfIcon fontSize="inherit" />
+                    </IconButton>
+                  </td>
+
+                  <td className={classes.tableCol}>
+                    <IconButton aria-label="delete" size="small" onClick={() => this.setAllDays(projectLineIndex)}>
                       <ArrowRightIcon fontSize="inherit" />
                     </IconButton>
                   </td>
 
                   <td className={classes.tableCol}>
-
+                    {this.getProjectTotalDays(projectLine)}
                   </td>
 
 
@@ -330,20 +383,24 @@ class ActivityReportPage extends React.Component {
 }
 
 ActivityReportPage.propTypes = {
+  clients: PropTypes.array.isRequired,
   projects: PropTypes.array.isRequired,
   projectLines: PropTypes.array.isRequired,
+  saveInvoice: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
+  clients: state.clients.clients,
   projects: state.projects.projects,
   projectLines: state.projects.projectLines,
+  currentUser: state.users.authUser,
   currentYear: state.projects.currentYear,
   currentMonthIndex: state.projects.currentMonthIndex,
 });
 
 export default withStyles(styles)(
   translate()(
-    connect(mapStateToProps, ProjectsActions)(
+    connect(mapStateToProps, { ...InvoicesActions, ...ProjectsActions })(
       ActivityReportPage,
     ),
   ),

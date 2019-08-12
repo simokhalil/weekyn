@@ -3,7 +3,6 @@ import React from 'react';
 
 import {
   AppBar,
-  Button,
   Dialog,
   Divider,
   IconButton,
@@ -17,10 +16,12 @@ import {
 } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
+import Content from 'components/content/Content';
 
 const useStyles = makeStyles({
   appBar: {
     position: 'relative',
+    background: 'transparent linear-gradient(80deg, #3863a3 1%, #1a78cf 99%) repeat scroll 0% 0%',
   },
 });
 
@@ -43,16 +44,21 @@ const ProjectsListDialog = ({ projects, isOpen, onClose, onSelect }) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <List>
-        {projects.map((project, projectIndex) => (
-          <React.Fragment key={projectIndex}>
-            <ListItem button onClick={() => onSelect(project)}>
-              <ListItemText primary={project.name} secondary={project.tjm} />
-            </ListItem>
-            <Divider />
-          </React.Fragment>
-        ))}
-      </List>
+
+        <Content>
+        <div>Séléctionnez le projet à ajouter</div>
+
+        <List>
+          {projects.map((project, projectIndex) => (
+            <React.Fragment key={projectIndex}>
+              <ListItem button onClick={() => onSelect(project)}>
+                <ListItemText primary={`${project.client && project.client.name} - ${project.name}`} secondary={project.tjm} />
+              </ListItem>
+              <Divider />
+            </React.Fragment>
+          ))}
+        </List>
+      </Content>
     </Dialog>
   )
 }

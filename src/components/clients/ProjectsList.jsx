@@ -91,8 +91,6 @@ class ProjectsList extends Component {
     const { isAddingProject, newProject } = this.state;
     const { classes, t, projects } = this.props;
 
-    console.log('projects', projects);
-
     return (
       <div>
         <CardHeader

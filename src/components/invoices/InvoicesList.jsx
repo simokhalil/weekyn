@@ -51,8 +51,6 @@ class ProjectsList extends Component {
 
     const isInvoiceMenuOpen = Boolean(anchorEl);
 
-    console.log('invoices list', invoices);
-
     return (
       <div>
 

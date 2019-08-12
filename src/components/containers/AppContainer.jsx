@@ -14,18 +14,13 @@ import { userDB, firebase } from '../../firebase';
 import { store } from '../../redux/store';
 
 import ActivityReportPage from 'pages/activity-report/ActivityReportPage';
-import ClientAddPage from 'pages/clients/ClientAddPage';
-import ClientDetailsPage from 'pages/clients/ClientDetailsPage';
 import ClientsPage from 'pages/clients/ClientsPage';
-import ClientsListPage from 'pages/clients/ClientsListPage';
 import Homepage from 'pages/homepage/Homepage';
 import InvoiceCreatePage from 'pages/invoices/InvoiceCreatePage';
 import InvoicesPage from 'pages/invoices/InvoicesPage';
 import SettingsPage from 'pages/settings/SettingsPage';
 
 const styles = theme => {
-  console.log(theme.palette);
-
   return ({
     root: {
       display: 'flex',
@@ -68,8 +63,6 @@ class AppContainer extends React.Component {
   componentDidMount() {
     const { getClients, history, location } = this.props;
 
-    console.log('this.props', this.props);
-
     this.userAuthStateChangedUnsubscribe = firebase.auth.onAuthStateChanged((authUser) => {
       console.log('AppContainer : Got authUser', authUser);
       if (authUser) {
@@ -108,8 +101,6 @@ class AppContainer extends React.Component {
             });
           })
       } else {
-
-        console.log('this.props', this.props);
 
         store.dispatch({
           type: 'GET_USER_CANCEL',

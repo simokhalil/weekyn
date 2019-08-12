@@ -38,10 +38,9 @@ class ClientAddPage extends Component {
 
   addClient = () => {
     const { client } = this.state;
-    const { currentUser, history, createClient } = this.props;
+    const { history, createClient } = this.props;
 
     try {
-      // clientsDB.addClient(currentUser.uid, client);
       history.push(AppConfig.routePaths.clients);
       createClient(client);
     } catch (error) {
@@ -128,16 +127,11 @@ class ClientAddPage extends Component {
 }
 
 ClientAddPage.propTypes = {
-  currentUser: PropTypes.object.isRequired,
   createClient: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.users.authUser,
-});
-
 export default translate()(
-  connect(mapStateToProps, ClientsActions)(
+  connect(null, ClientsActions)(
     ClientAddPage,
   ),
 );

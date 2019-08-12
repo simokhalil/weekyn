@@ -15,7 +15,6 @@ import Content from '../../components/content/Content';
 import LogoUploader from 'components/settings/LogoUploader';
 import SectionTitle from '../../components/content/SectionTitle';
 import * as UserActions from '../../redux/actions/user';
-import { userDB } from '../../firebase';
 
 import '../../stylesheets/settings.scss';
 

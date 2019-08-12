@@ -1,5 +1,5 @@
 import { eventChannel } from 'redux-saga';
-import { call, cancelled, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
+import { call, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
 
 import { invoicesDB, firebase } from '../../firebase/';
 import { store } from '../store';
@@ -15,8 +15,6 @@ function subscribeToInvoices(userId) {
           id: doc.id,
         });
       });
-
-      console.log('got invoices : ', invoices);
 
       emmiter(invoices);
     });
@@ -39,20 +37,6 @@ export function* getInvoicesSaga(action) {
 
   yield take('FETCH_INVOICES_CANCEL')
   channel.close();
-
-  /* try {
-    while (true) {
-      const invoices = yield take(channel);
-
-      console.log('SAGA got clients', invoices);
-
-      yield put({ type: 'INVOICES_SET_REDUX', payload: { invoices } });
-    }
-  } finally {
-    if (yield cancelled()) {
-      channel.close();
-    }
-  } */
 }
 
 export function* saveInvoiceSaga(action) {
@@ -63,9 +47,9 @@ export function* saveInvoiceSaga(action) {
 
   try {
     if (id) {
-      yield call(invoicesDB.saveInvoice(currentUser.uid, id, invoice));
+      yield invoicesDB.saveInvoice(currentUser.uid, id, invoice);
     } else {
-      yield call(invoicesDB.createInvoice(currentUser.uid, invoice));
+      yield invoicesDB.createInvoice(currentUser.uid, invoice);
     }
 
     yield put({ type: 'SAVE_INVOICE_SUCCESS' });

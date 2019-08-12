@@ -1,8 +1,6 @@
 import { db } from '../firebase';
 
 export const doCreateUser = (id, name, email, settings) => {
-  console.log('creating user in db with id ', id);
-
   return db.collection('users').doc(id).set({
     name,
     email,
@@ -18,8 +16,6 @@ export const onceGetUser = (id) =>
 
 export const saveSettings = (userId, settings) => {
   const collection = db.collection('users').doc(userId);
-
-  console.log('DB.saveSettings', settings);
 
   return collection.update('settings', {
       ...settings,

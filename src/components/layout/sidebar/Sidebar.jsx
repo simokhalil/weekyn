@@ -6,8 +6,6 @@ import { translate } from 'react-polyglot';
 
 import { Drawer, List, withStyles } from '@material-ui/core';
 
-import LinkIcon from '@material-ui/icons/Link';
-
 import AppConfig from '../../../AppConfig';
 import sideMenuItems from './SideBarItems';
 import LogoImage from '../../../assets/images/Weekyn_logo_white_sm.png';
@@ -83,7 +81,7 @@ class SideMenu extends Component {
         anchor="left"
       >
         <div className={classes.toolbar}>
-          <img src={LogoImage} className={classes.logo} />
+          <img src={LogoImage} className={classes.logo} alt="Weekyn" />
         </div>
 
         {sideMenuItems.map((sideMenuGroup, index) => (

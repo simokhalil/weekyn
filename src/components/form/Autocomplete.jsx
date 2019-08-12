@@ -5,10 +5,7 @@ import parse from 'autosuggest-highlight/parse';
 
 import {
   MenuItem,
-  TextField,
-  Typography,
   Paper,
-  Popper,
   withStyles,
 } from '@material-ui/core';
 
@@ -74,7 +71,7 @@ class Autocomplete extends Component {
     // Suggestions also need to be provided to the Autosuggest,
     // and they are initially empty because the Autosuggest is closed.
     this.state = {
-      value: '',
+      value: null,
       suggestions: [],
     };
   }
@@ -88,11 +85,6 @@ class Autocomplete extends Component {
   };
 
   onSelect = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-    console.log('suggestion', suggestion);
-    console.log('suggestionValue', suggestionValue);
-    console.log('suggestionIndex', suggestionIndex);
-    console.log('sectionIndex', sectionIndex);
-    console.log('method', method);
     const { onSelect } = this.props;
     onSelect(suggestion)
   };
@@ -125,15 +117,15 @@ class Autocomplete extends Component {
 
   render() {
     const { value, suggestions } = this.state;
-    const { classes, placeholder } = this.props;
+    const { classes, placeholder, initialValue } = this.props;
 
     // Autosuggest will pass through all these props to the input.
     const inputProps = {
       placeholder,
       className: 'fakeInput',
-      value,
+      value: value || initialValue,
       onChange: this.onChange,
-      style:{ width: '100%' }
+      style:{ width: '100%' },
     };
 
     // Finally, render it!
