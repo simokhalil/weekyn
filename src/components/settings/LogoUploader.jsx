@@ -151,6 +151,7 @@ function LogoUploader({
       imageCropAspectRatio="1:1"
       imageResizeTargetWidth={200}
       imageResizeTargetHeight={200}
+      imageTransformOutputMimeType="image/png"
       stylePanelLayout="compact circle"
       styleLoadIndicatorPosition="center bottom"
       styleButtonRemoveItemPosition="center bottom"
