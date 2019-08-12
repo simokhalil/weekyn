@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core';
 
 import ArchiveIcon from '@material-ui/icons/ArchiveOutlined';
+import EditIcon from '@material-ui/icons/EditOutlined';
 import StoreIcon from '@material-ui/icons/StoreOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutline';
 
@@ -33,13 +34,20 @@ const styles = () => ({
   },
 });
 
-const ClientsList = ({ classes, clients, deleteType, onDeleteClient, t }) => {
+const ClientsList = ({ classes, clients, deleteType, onDeleteClient, onEditClient, t }) => {
 
   const onDelete = (event, clientId) => {
     event.preventDefault();
     event.stopPropagation();
 
     onDeleteClient(clientId);
+  };
+
+  const onEdit = (event, clientId) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    onEditClient(clientId);
   };
 
   return (
@@ -54,7 +62,11 @@ const ClientsList = ({ classes, clients, deleteType, onDeleteClient, t }) => {
             </ListItemAvatar>
             <ListItemText primary={client.name} secondary={`${t('common.createdAt')} ${DateUtils.formatDate(client.createdAt)}`} />
             <ListItemSecondaryAction>
-              <IconButton edge="end" aria-label="comments" onClick={(e) => onDelete(e, client.id)}>
+              <IconButton edge="end" aria-label="edit" onClick={(e) => onEdit(e, client.id)}>
+                <EditIcon />
+              </IconButton>
+
+              <IconButton edge="end" aria-label="delete" onClick={(e) => onDelete(e, client.id)}>
                 {deleteType === 'delete' && (
                   <DeleteIcon style={{ fontSize: '0.9em', color: '#ff5757' }} />
                 )}

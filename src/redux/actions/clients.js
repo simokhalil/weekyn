@@ -6,10 +6,10 @@ export function getClients(active) {
   };
 }
 
-export function createClient(client) {
+export function createClient(client, clientId = null) {
   return {
     type: 'CREATE_CLIENT',
-    payload: { client },
+    payload: { client, clientId },
   };
 }
 

@@ -21,6 +21,7 @@ import LocationIcon from '@material-ui/icons/LocationOnOutlined';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 import StoreIcon from '@material-ui/icons/StoreOutlined';
 
+import AppConfig from 'AppConfig';
 import Button from '../../components/form/Button';
 import Content from 'components/content/Content';
 import ProjectsList from 'components/clients/ProjectsList';
@@ -73,6 +74,12 @@ class ClientDetailsPage extends Component {
     });
   };
 
+  onEdit = () => {
+    const { clientId } = this.state;
+    const { history } = this.props;
+    history.push(`${AppConfig.routePaths.clients}/${clientId}/edit`);
+  };
+
   render() {
     const { client, clientId } = this.state;
     const { classes, projects, t } = this.props;
@@ -98,7 +105,7 @@ class ClientDetailsPage extends Component {
 
         <CardHeader
           action={
-            <Button variant="contained" color="secondary" size="small">
+            <Button variant="contained" color="secondary" size="small" onClick={this.onEdit}>
               {t('common.edit')}
             </Button>
           }

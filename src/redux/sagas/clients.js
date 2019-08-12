@@ -6,17 +6,33 @@ import { store } from '../store';
 
 function subscribeToClients(userId, active = true) {
   return eventChannel((emmiter) => {
-    firebase.db.collection('users').doc(userId).collection('clients').where('active', '==', active).orderBy('updatedAt', 'desc').onSnapshot(snapshot => {
+    firebase.db.collection('users').doc(userId).collection('clients').orderBy('updatedAt', 'desc').onSnapshot(snapshot => {
       const clients = [];
+      const activeClients = [];
+      const archivedClients = [];
 
       snapshot.forEach(doc => {
+        const clientData = doc.data();
+
         clients.push({
-          ...doc.data(),
+          ...clientData,
           id: doc.id,
         });
+
+        if (clientData.active) {
+          activeClients.push({
+            ...clientData,
+            id: doc.id,
+          })
+        } else {
+          archivedClients.push({
+            ...clientData,
+            id: doc.id,
+          })
+        }
       });
 
-      emmiter(clients);
+      emmiter({ clients, activeClients, archivedClients });
     });
 
     return () => null;
@@ -38,13 +54,17 @@ export function* getClientsSaga(action) {
 }
 
 export function* createClientSaga(action) {
-  const { client } = action.payload;
+  const { client, clientId } = action.payload;
 
   const state = store.getState();
   const currentUser = state.users.authUser;
 
   try {
-    yield call(clientsDB.addClient(currentUser.uid, client));
+    if (clientId) {
+      yield clientsDB.saveClient(currentUser.uid, clientId, client);
+    } else {
+      yield clientsDB.addClient(currentUser.uid, client);
+    }
 
     yield put({ type: 'CREATE_CLIENT_SUCCESS' });
 

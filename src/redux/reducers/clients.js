@@ -4,7 +4,7 @@ export default function users(state = {}, action) {
     case 'CLIENTS_SET_REDUX':
       return {
         ...state,
-        clients: action.payload.clients,
+        ...action.payload.clients,
       };
 
     // initial state

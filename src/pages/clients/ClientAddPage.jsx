@@ -11,6 +11,7 @@ import AppConfig from 'AppConfig';
 import GridContainer from 'components/layout/GridContainer';
 import GridItem from 'components/layout/GridItem';
 import * as ClientsActions from '../../redux/actions/clients';
+import { clientsDB } from '../../firebase';
 
 class ClientAddPage extends Component {
   state = {
@@ -23,6 +24,26 @@ class ClientAddPage extends Component {
       city: '',
       country: '',
     },
+    clientId: null,
+  };
+
+  componentDidMount() {
+    const { match } = this.props;
+
+    if (match.params.id) {
+      this.getClient(match.params.id);
+    }
+  }
+
+  getClient = async (clientId) => {
+    const { currentUser } = this.props;
+
+    const client = await clientsDB.getClient(currentUser.uid, clientId);
+
+    this.setState({
+      client: client.data(),
+      clientId,
+    });
   };
 
   handleClientAttributeChange = (varName, value) => {
@@ -36,16 +57,17 @@ class ClientAddPage extends Component {
     });
   };
 
-  addClient = () => {
-    const { client } = this.state;
+  handleCancel = () => {
+    const { history } = this.props;
+    history.goBack();
+  };
+
+  saveClient = () => {
+    const { client, clientId } = this.state;
     const { history, createClient } = this.props;
 
-    try {
-      history.push(AppConfig.routePaths.clients);
-      createClient(client);
-    } catch (error) {
-      console.log('error creating client', error);
-    }
+    history.push(AppConfig.routePaths.clients);
+    createClient(client, clientId);
   };
 
   render() {
@@ -119,7 +141,8 @@ class ClientAddPage extends Component {
         <FooterActions
           cancelLabel={t('common.cancel')}
           validateLabel={t('common.save')}
-          onValidate={this.addClient}
+          onCancel={this.handleCancel}
+          onValidate={this.saveClient}
         />
       </Content>
     )
@@ -128,10 +151,15 @@ class ClientAddPage extends Component {
 
 ClientAddPage.propTypes = {
   createClient: PropTypes.func.isRequired,
-}
+  currentUser: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = state => ({
+  currentUser: state.users.authUser,
+});
 
 export default translate()(
-  connect(null, ClientsActions)(
+  connect(mapStateToProps, ClientsActions)(
     ClientAddPage,
   ),
 );

@@ -15,6 +15,7 @@ const ClientsPage = () => {
       <Route path={AppConfig.routePaths.clients} exact component={ClientsListPage} />
       <Route path={AppConfig.routePaths.clientsArchived} exact component={ClientsArchivedListPage} />
       <Route path={AppConfig.routePaths.clientAdd} exact component={ClientAddPage} />
+      <Route path={AppConfig.routePaths.clientEdit} component={ClientAddPage} />
       <Route path={AppConfig.routePaths.clientDetails} component={ClientDetailsPage} />
     </Switch>
   );

@@ -161,7 +161,7 @@ class ActivityReportPage extends React.Component {
 
   setAllDays = (projectIndex) => {
     const { monthLength } = this.state;
-    const { currentMonthIndex, currentYear, projectLines, setProjectLineDayActivity } = this.props;
+    const { currentMonthIndex, currentYear, projectLines, saveProjectActivity, setProjectLineDayActivity } = this.props;
 
     projectLines[projectIndex].activity = projectLines[projectIndex].activity || {};
     projectLines[projectIndex].activity[currentYear] = projectLines[projectIndex].activity[currentYear] || {};
@@ -174,6 +174,7 @@ class ActivityReportPage extends React.Component {
     }
 
     setProjectLineDayActivity(projectLines);
+    saveProjectActivity(projectIndex);
   };
 
   openProjectsListDialog = () => {

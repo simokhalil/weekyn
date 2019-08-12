@@ -37,7 +37,9 @@ const settings = {
 };
 db.settings(settings);
 
-db.enablePersistence();
+db.enablePersistence({
+  synchronizeTabs: true,
+});
 
 const storage = firebase.storage().ref();
 

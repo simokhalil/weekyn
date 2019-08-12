@@ -27,14 +27,21 @@ const useStyles = makeStyles({
   },
 });
 
-const FooterActions = ({ validateLabel, cancelLabel, onValidate }) => {
+const FooterActions = ({ validateLabel, cancelLabel, onCancel, onValidate }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <div className={classes.actionsContainer}>
         {cancelLabel && (
-          <Button variant="outlined" color="default" className={classes.button}>{cancelLabel}</Button>
+          <Button
+            variant="outlined"
+            color="default"
+            className={classes.button}
+            onClick={onCancel}
+          >
+            {cancelLabel}
+          </Button>
         )}
 
         {validateLabel && (

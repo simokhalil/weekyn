@@ -28,8 +28,8 @@ class ClientsListPage extends Component {
   };
 
   componentDidMount() {
-    const { getClients } = this.props;
-    getClients();
+    // const { getClients } = this.props;
+    // getClients();
   }
 
   gotoAddClient = () => {
@@ -37,10 +37,13 @@ class ClientsListPage extends Component {
     history.push(AppConfig.routePaths.clientAdd);
   };
 
+  onEditClient = (clientId) => {
+    const { history } = this.props;
+    history.push(`${AppConfig.routePaths.clients}/${clientId}/edit`);
+  };
+
   onDeleteClient = async (clientId) => {
-
     const { currentUser } = this.props;
-
     await clientsDB.archiveClient(currentUser.uid, clientId);
   };
 
@@ -67,7 +70,12 @@ class ClientsListPage extends Component {
         </div>
 
         <div>
-          <ClientsList clients={clients} onDeleteClient={this.onDeleteClient} deleteType="archive" />
+          <ClientsList
+            clients={clients}
+            onDeleteClient={this.onDeleteClient}
+            onEditClient={this.onEditClient}
+            deleteType="archive"
+          />
         </div>
 
         <ConfirmationDialog
@@ -93,7 +101,7 @@ ClientsListPage.defaultProps = {
 
 const mapStateToProps = state => ({
   currentUser: state.users.authUser,
-  clients: state.clients.clients,
+  clients: state.clients.activeClients,
 });
 
 export default withStyles(styles)(

@@ -38,6 +38,11 @@ class ClientsListPage extends Component {
     history.push(AppConfig.routePaths.clientAdd);
   };
 
+  onEditClient = (clientId) => {
+    const { history } = this.props;
+    history.push(`${AppConfig.routePaths.clients}/${clientId}/edit`);
+  };
+
   onDeleteClient = async (clientId) => {
     const { deleteClient } = this.props;
 
@@ -56,7 +61,11 @@ class ClientsListPage extends Component {
         <ContentToolbar title="Clients" section="clients" />
 
         <div>
-          <ClientsList clients={clients} onDeleteClient={this.onDeleteClient} />
+          <ClientsList
+            clients={clients}
+            onEditClient={this.onEditClient}
+            onDeleteClient={this.onDeleteClient}
+          />
         </div>
 
         <ConfirmationDialog
@@ -81,7 +90,7 @@ ClientsListPage.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  clients: state.clients.clients,
+  clients: state.clients.archivedClients,
 });
 
 export default withStyles(styles)(

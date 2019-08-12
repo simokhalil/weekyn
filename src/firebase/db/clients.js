@@ -21,6 +21,22 @@ export const addClient = (userId, client) => {
 };
 
 /**
+ * Save existing client
+ * @param {*} userId
+ * @param {*} client
+ */
+export const saveClient = (userId, clientId, client) => {
+  const collection = db.collection('users').doc(userId).collection('clients').doc(clientId);
+
+  const now = (new Date()).getTime();
+
+  collection.set({
+    ...client,
+    updatedAt: now,
+  }, { merge: true });
+};
+
+/**
  * Get client details
  * @param {*} userId
  * @param {*} clientId
