@@ -1,3 +1,4 @@
+import ContentEditable from 'react-contenteditable';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -107,7 +108,16 @@ class SettingsPage extends Component {
               <div className="settingsItem">
                 <div>Informations emetteur</div>
 
-                <textarea className="emitterInfo" value={settings.emitterInfo} onChange={this.handleEmitterInfoChange} />
+                {/* <textarea className="emitterInfo" value={settings.emitterInfo} onChange={this.handleEmitterInfoChange} /> */}
+
+                <ContentEditable
+                  placeholder="Infos emetteur"
+                  html={settings.emitterInfo} // innerHTML of the editable div
+                  disabled={false}       // use true to disable editing
+                  onChange={this.handleEmitterInfoChange} // handle innerHTML change
+                  className="emitterInfo"
+                  style={{ border: '1px solid #aaa', borderRadius: '5px', padding: '10px' }}
+                />
               </div>
 
               <div className="settingsItem">
