@@ -45,3 +45,9 @@ export function saveProjectActivity(projectLineIndex) {
     payload: { projectLineIndex },
   };
 }
+
+export function getWorkingDaysByMonthforCurrentYear() {
+  return {
+    type: 'SET_WORKING_DAYS_PER_MONTH',
+  }
+}

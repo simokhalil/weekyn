@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   projectLines: [],
   currentYear: moment().year(),
   currentMonthIndex: moment().month(),
+  workedDaysForCurrentYear: [],
 };
 
 export default function projects(state = INITIAL_STATE, action) {
@@ -58,6 +59,36 @@ export default function projects(state = INITIAL_STATE, action) {
       return {
         ...state,
         projectLines,
+      };
+    }
+
+    case 'SET_WORKING_DAYS_PER_MONTH': {
+      const { currentYear, projects } = state;
+
+      const workingDays = [];
+      let month = 0;
+
+      for (month = 0; month < 12; month++) {
+        let nbDays = 0;
+
+        projects.forEach((project) => {
+          if (project.activity && project.activity[currentYear] && project.activity[currentYear][month]) {
+            Object.values(project.activity[currentYear][month]).forEach((day) => {
+              nbDays += parseFloat(day) || 0;
+            })
+          }
+        });
+
+        workingDays[month] = {
+          name: month + 1,
+          jours: nbDays
+        };
+      }
+
+      console.log('workingDays', workingDays);
+      return {
+        ...state,
+        workedDaysForCurrentYear: [...workingDays],
       };
     }
 

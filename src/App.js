@@ -35,6 +35,11 @@ class App extends React.Component {
           data: { ...infos },
         });
 
+        store.dispatch({
+          type: 'GET_PROJECTS',
+          payload: {},
+        });
+
         userDB.onceGetUser(infos.uid)
           .then(userData => {
             userData = userData.data();

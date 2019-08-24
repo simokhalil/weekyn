@@ -42,6 +42,7 @@ export function* getProjectsSaga(action) {
   yield takeEvery(channel, function* (projects) {
     yield put({ type: 'PROJECTS_SET_REDUX', payload: { projects } });
     yield put({ type: 'SET_PROJECT_LINES' });
+    yield put({ type: 'SET_WORKING_DAYS_PER_MONTH' });
   });
 
   yield take('GET_PROJECTS_CANCEL');
