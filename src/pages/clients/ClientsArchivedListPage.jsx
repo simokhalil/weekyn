@@ -13,6 +13,7 @@ import Content from 'components/content/Content';
 import ContentToolbar from 'components/content/ContentToolbar';
 import * as clientsActions from '../../redux/actions/clients';
 import ConfirmationDialog from 'components/content/ConfirmationDialog';
+import { clientsDB } from '../../firebase';
 
 const styles = {
   actionBar: {
@@ -43,9 +44,13 @@ class ClientsListPage extends Component {
     history.push(`${AppConfig.routePaths.clients}/${clientId}/edit`);
   };
 
+  onRestoreClient = async (clientId) => {
+    const { currentUser } = this.props;
+    await clientsDB.restoreClient(currentUser.uid, clientId);
+  };
+
   onDeleteClient = async (clientId) => {
     const { deleteClient } = this.props;
-
     deleteClient(clientId);
   };
 
@@ -65,6 +70,7 @@ class ClientsListPage extends Component {
             clients={clients}
             onEditClient={this.onEditClient}
             onDeleteClient={this.onDeleteClient}
+            onRestoreClient={this.onRestoreClient}
           />
         </div>
 
@@ -91,6 +97,7 @@ ClientsListPage.defaultProps = {
 
 const mapStateToProps = state => ({
   clients: state.clients.archivedClients,
+  currentUser: state.users.authUser,
 });
 
 export default withStyles(styles)(

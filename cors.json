@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["https://weekyn.com", "http://localhost:3000"],
+    "origin": ["https://weekyn.com", "https://weekyn.netlify.com", "http://localhost:3000"],
     "method": ["GET"],
     "maxAgeSeconds": 3600
   }

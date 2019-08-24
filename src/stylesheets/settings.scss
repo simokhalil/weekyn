@@ -1,16 +1,43 @@
+.MuiPaper-root.MuiCard-root {
+  overflow: visible;
+}
+
 .filepond--root {
 	width:170px;
 	margin: 0 auto;
 }
 
+.filepond--wrapper {
+    display: inline-block;
+}
+
 .settingsItem {
-  margin: 0 auto 70px 30px;
+  display: table;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+
+  .settingsItemLeft {
+    display: table-cell;
+    vertical-align: top;
+    width: 200px;
+    background: #eee;
+    padding: 20px;
+  }
+
+  .SettingsItemRight {
+    display: table-cell;
+    padding: 20px 20px 70px;
+    flex: 1;
+
+    .settingItemDescription {
+      margin: 10px 0 15px;
+    }
+  }
 }
 
 .emitterInfo {
   display: block;
   width: 70%;
-  margin: auto;
   border-radius: 5px;
   border: 1px solid #b9c6d4;
   resize: none;
@@ -19,4 +46,15 @@
   line-height: 2;
   transition: border-color .2s;
   font-size: 0.9rem;
+}
+
+@media only screen and (max-width: 600px) {
+  .settingsItem {
+    display: block;
+
+    .settingsItemLeft {
+      display: block;
+      width: 100%;
+    }
+  }
 }

@@ -56,6 +56,18 @@ export const archiveClient = (userId, clientId) => {
 }
 
 /**
+ * Restore archived client (active = true)
+ * @param {*} userId
+ * @param {*} clientId
+ */
+export const restoreClient = (userId, clientId) => {
+  return db.collection('users').doc(userId).collection('clients').doc(clientId).set({
+    active: true,
+    updatedAt: (new Date()).getTime(),
+  }, { merge: true });
+}
+
+/**
  * Delete client
  * @param {*} userId
  * @param {*} clientId

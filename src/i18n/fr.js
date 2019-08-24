@@ -6,17 +6,26 @@ export default {
   common: {
     actions: 'Actions',
     add: 'Ajouter',
+    archive: 'Archiver',
     cancel: 'Annuler',
     confirm: 'Je confirme',
     createdAt: 'Créé le',
     edit: 'Modifier',
     noDataToShow: 'Aucune donnée à afficher',
     ok: 'Ok',
+    restore: 'Restaurer',
     save: 'Enregistrer',
     select: 'Sélectionner',
     validate: 'Valider',
     delete: 'Supprimer',
     download: 'Télécharger',
+  },
+
+  landing: {
+    home: 'Accueil',
+    headerTitle: 'Weekyn, <br /> L\'ERP simple pour freelances et indépendants',
+    headerDescription: 'De la gestion de vos Comptes Rendus d\'Activité (CRA), à la facturation de vos clients, Weekyn vous accompagne chaque jour pour vous simplifier vie. Générez vos factures à partir de vos CRA !',
+    headerCTA: 'Je veux découvrir',
   },
 
   menus: {
@@ -75,6 +84,7 @@ export default {
   },
 
   activity: {
+    activityReport: 'Rapport d\'activité',
     addLine: 'Ajouter une ligne',
   },
 

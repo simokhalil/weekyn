@@ -7,6 +7,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
+import red from '@material-ui/core/colors/red';
 
 import App from './App';
 import MessagesEnglish from './i18n/en';
@@ -22,6 +23,8 @@ const theme = createMuiTheme({
   palette: {
     primary: blue,
     secondary: { main: '#00c386' },
+    danger: { main: '#a94442' },
+    error: red,
   },
   typography: {
     // Use the system font instead of the default Roboto font.

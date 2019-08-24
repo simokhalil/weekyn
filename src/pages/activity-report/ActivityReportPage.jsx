@@ -286,7 +286,7 @@ class ActivityReportPage extends React.Component {
               {t('activity.addLine')}
             </Button>
           }
-          title={<SectionTitle label="CRA" />}
+          title={<SectionTitle label={t('activity.activityReport')} />}
         />
 
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px auto' }}>

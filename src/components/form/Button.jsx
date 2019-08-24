@@ -12,9 +12,23 @@ const useStyles = makeStyles({
   secondary: {
     color: '#fff',
   },
-  outlined: {
+  dangercontained: {
+    background: '#FF7483',
+    color: '#fff',
+    '&:hover': {
+      background: '#ff2940',
+    },
+  },
+  secondaryoutlined: {
     color: '#00c386',
-  }
+  },
+  dangeroutlined: {
+    border: '1px solid #FF7483',
+    color: '#FF7483',
+    '&:hover': {
+      background: '#fff1f2',
+    },
+  },
 });
 
 const Button = ({ children, className, color, size, variant, ...rest }) => {
@@ -24,8 +38,9 @@ const Button = ({ children, className, color, size, variant, ...rest }) => {
     classes.root,
     classes[color],
     className,
+    [classes[`${color}${variant}`]],
     {
-      [classes.outlined]: variant === 'outlined',
+      [classes[`${color}${variant}`]]: variant === 'outlined',
     }
   );
 

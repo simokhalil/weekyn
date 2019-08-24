@@ -9,7 +9,7 @@ import AppConfig from '../../AppConfig';
 const styles = theme => ({
   content: {
     flexGrow: 1,
-    padding: `0 ${theme.spacing(3)}`,
+    padding: `0 ${theme.spacing(3)}px`,
     flexDirection: 'column',
     position: 'relative',
   },

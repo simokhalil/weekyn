@@ -3,14 +3,21 @@ import { Link } from 'react-router-dom';
 import { translate } from 'react-polyglot';
 
 import AppConfig from '../../AppConfig';
+import Footer from '../../components/landing/Footer';
+import HomeSection from '../../components/landing/HomeSection';
+import Navbar from '../../components/landing/Navbar';
+import ServicesSection from '../../components/landing/ServicesSection';
+
+import '../../stylesheets/landing.scss';
 
 const LandingPage = ({ t }) => {
 
   return (
     <>
-      <div>Landing page</div>
-
-      <Link to={AppConfig.routePaths.login}>{t('hello')}</Link>
+      <Navbar />
+      <HomeSection />
+      <ServicesSection />
+      <Footer />
     </>
   );
 }

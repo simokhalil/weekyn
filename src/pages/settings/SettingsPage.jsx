@@ -77,56 +77,69 @@ class SettingsPage extends Component {
     return (
       <Content>
         <CardHeader
-          action={
-            <>
-              <Button variant="contained" color="secondary" size="small" onClick={this.saveInvoice} style={{ marginRight: '10px' }}>
-                {t('common.save')}
-              </Button>
-            </>
-          }
           title={<SectionTitle label={t('settings.settings')} />}
           style={{ marginBottom: '30px' }}
         />
 
-        <Card>
-          <CardHeader
-            subheader={t('settings.general')}
-          />
+        <CardHeader
+          subheader={t('settings.general')}
+        />
 
-          <CardContent>
+        <Card>
+
+
+          <CardContent style={{ padding: 0 }}>
             <>
               <div className="settingsItem">
-                <div>Logo</div>
+                <div className="settingsItemLeft">Logo</div>
 
-                <LogoUploader
-                  onRequestSave={this.handleLogoSave}
-                  onRequestClear={this.handleClearLogo}
-                  defaultFiles={files}
-                />
+                <div className="SettingsItemRight">
+                  <div className="settingItemDescription">
+                    Choisissez votre logo. Il sera visible en haut à gauche de vos factures, au dessus des informations emetteur
+                  </div>
+
+                  <LogoUploader
+                    onRequestSave={this.handleLogoSave}
+                    onRequestClear={this.handleClearLogo}
+                    defaultFiles={files}
+                    />
+                </div>
               </div>
 
               <div className="settingsItem">
-                <div>Informations emetteur</div>
+                <div className="settingsItemLeft">Informations emetteur</div>
 
                 {/* <textarea className="emitterInfo" value={settings.emitterInfo} onChange={this.handleEmitterInfoChange} /> */}
 
-                <ContentEditable
-                  placeholder="Infos emetteur"
-                  html={settings.emitterInfo} // innerHTML of the editable div
-                  disabled={false}       // use true to disable editing
-                  onChange={this.handleEmitterInfoChange} // handle innerHTML change
-                  className="emitterInfo"
-                  style={{ border: '1px solid #aaa', borderRadius: '5px', padding: '10px' }}
-                />
+                <div className="SettingsItemRight">
+                  <div className="settingItemDescription">
+                    Ces informations sont visibles en haut à gauche des factures
+                  </div>
+
+                  <ContentEditable
+                    placeholder="Infos emetteur"
+                    html={settings.emitterInfo} // innerHTML of the editable div
+                    disabled={false}       // use true to disable editing
+                    onChange={this.handleEmitterInfoChange} // handle innerHTML change
+                    className="emitterInfo"
+                    style={{ border: '1px solid #aaa', borderRadius: '5px', padding: '10px' }}
+                  />
+                </div>
               </div>
 
               <div className="settingsItem">
-                <div>Couleur par défaut</div>
+                <div className="settingsItemLeft">Couleur par défaut</div>
 
-                <ColorPicker
-                  color={settings.defaultColor}
-                  onChange={this.handleDefaultColorChange}
-                />
+                <div className="SettingsItemRight">
+                  <div className="settingItemDescription">
+                    Ce paramètre définit la couleur par défaut utilisée pour les factures. Il peut être changé ponctuellement pendant l'édition de chaque facture.
+                  </div>
+                  <ColorPicker
+                    flat
+                    color={settings.defaultColor}
+                    onChange={this.handleDefaultColorChange}
+                  />
+                </div>
               </div>
 
             </>
@@ -134,6 +147,53 @@ class SettingsPage extends Component {
         </Card>
 
 
+        <CardHeader
+          subheader="Mon compte"
+        />
+
+        <Card>
+
+
+          <CardContent style={{ padding: 0 }}>
+            <>
+              <div className="settingsItem">
+                <div className="settingsItemLeft">Mot de passe</div>
+
+                <div className="SettingsItemRight">
+                  <div className="settingItemDescription">
+                    Cette option vous permet de changer votre mot de passe
+                  </div>
+
+                  <Button color="light" variant="outlined">Changer mon mot de passe</Button>
+                </div>
+              </div>
+
+              <div className="settingsItem">
+                <div className="settingsItemLeft">Réinitialisation</div>
+
+                <div className="SettingsItemRight">
+                  <div className="settingItemDescription">
+                    Cette option vous permet de réinitialiser votre compte
+                  </div>
+
+                  <Button color="danger" variant="outlined">Réinitialiser mon compte</Button>
+                </div>
+              </div>
+
+              <div className="settingsItem">
+                <div className="settingsItemLeft">Suppression</div>
+
+                <div className="SettingsItemRight">
+                  <div className="settingItemDescription">
+                    Cette option vous permet de supprimer définitivement votre compte
+                  </div>
+
+                  <Button color="danger">Supprimer mon compte</Button>
+                </div>
+              </div>
+            </>
+          </CardContent>
+        </Card>
       </Content>
     );
   }

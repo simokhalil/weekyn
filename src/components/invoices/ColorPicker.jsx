@@ -17,8 +17,10 @@ const useStyles = makeStyles({
   paper: {
     position: 'absolute',
     top: 36,
-    right: 0,
     left: 0,
+  },
+  paperFlat: {
+    display: 'inline-block',
   },
   button: {
     minWidth: '20px',
@@ -28,7 +30,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ColorPicker = ({ className, color, style, onChange }) => {
+const ColorPicker = ({ className, color, flat, style, onChange }) => {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
 
@@ -44,12 +46,16 @@ const ColorPicker = ({ className, color, style, onChange }) => {
     <div className={classNames(classes.root, className)} style={style}>
       <ClickAwayListener onClickAway={handleClickAway}>
         <div>
-          <Button onClick={handleClick} className={classes.button} style={{ backgroundColor: color }}><span /></Button>
-          {open && (
-            <Paper className={classes.paper}>
+          {!flat && (
+            <Button onClick={handleClick} className={classes.button} style={{ backgroundColor: color }}><span /></Button>
+          )}
+
+          {(open || flat) && (
+            <Paper className={flat ? classes.paperFlat : classes.paper}>
               <TwitterPicker
                 color={color}
                 onChangeComplete={(color) => onChange(color.hex)}
+                triangle={flat ? 'hide' : 'top-left'}
               />
             </Paper>
           )}
@@ -62,12 +68,14 @@ const ColorPicker = ({ className, color, style, onChange }) => {
 ColorPicker.proTypes = {
   className: PropTypes.string,
   color: PropTypes.string.isRequired,
+  flat: PropTypes.bool,
   style: PropTypes.object,
   onChange: PropTypes.func.isRequired,
 };
 
 ColorPicker.defaultProps = {
   className: '',
+  flat: false,
   style: {},
 };
 
