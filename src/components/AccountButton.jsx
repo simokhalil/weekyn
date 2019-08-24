@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 import { withRouter } from 'react-router-dom';
 
@@ -12,7 +13,7 @@ import {
 
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
-import { auth } from '../firebase';
+import * as UserActions from '../redux/actions/user';
 
 const styles = {
   icon: {
@@ -33,9 +34,10 @@ class AccountButton extends Component {
     this.setState({ anchorEl: null });
   };
 
-  signOut() {
-    auth.doSignOut();
-  }
+  signOut = () => {
+    const { logout } = this.props;
+    logout();
+  };
 
   render() {
 
@@ -77,7 +79,9 @@ class AccountButton extends Component {
 export default withRouter(
   withStyles(styles)(
     translate()(
-      AccountButton,
-    )
-  )
+      connect(null, UserActions)(
+        AccountButton,
+      ),
+    ),
+  ),
 );

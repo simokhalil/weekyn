@@ -9,12 +9,50 @@ import AppContainer from './components/containers/AppContainer';
 import LandingPage from './pages/landing-page/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from 'pages/auth/SignupPage';
+import { userDB, firebase } from './firebase';
+import { store } from './redux/store';
 
 if (AppConfig.debug === 'false') {
   console.log = () => { };
 }
 
 class App extends React.Component {
+
+  componentDidMount() {
+    this.userAuthStateChangedUnsubscribe = firebase.auth.onAuthStateChanged((authUser) => {
+      console.log('AppContainer : Got authUser', authUser);
+      if (authUser) {
+        let infos = {
+          email: authUser.email,
+          uid: authUser.uid,
+          displayName: authUser.displayName,
+          emailVerified: authUser.emailVerified,
+        };
+        this.setState(() => ({ authUser: infos, isLoading: false }));
+
+        store.dispatch({
+          type: 'USER_SIGNED_IN',
+          data: { ...infos },
+        });
+
+        userDB.onceGetUser(infos.uid)
+          .then(userData => {
+            userData = userData.data();
+            infos = {
+              ...infos,
+              ...userData,
+            };
+
+            console.log('got user data : ', userData);
+
+            store.dispatch({
+              type: 'USER_SIGNED_IN',
+              data: { ...infos },
+            });
+          })
+      }
+    });
+  }
 
   render() {
     return (

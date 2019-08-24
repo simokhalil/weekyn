@@ -29,6 +29,13 @@ class LoginPage extends React.Component {
     ...INITIAL_STATE,
   };
 
+  componentDidMount() {
+    const { currentUser, history } = this.props;
+    if (currentUser) {
+      history.push(this.props.redirectTo);
+    }
+  }
+
   componentWillReceiveProps(newProps) {
     if (newProps.currentUser) {
       this.setState(() => ({ ...INITIAL_STATE }));

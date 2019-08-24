@@ -5,8 +5,10 @@ import { invoicesDB, firebase } from '../../firebase/';
 import { store } from '../store';
 
 function subscribeToInvoices(userId) {
+  let invoicesUnsubscribe = null;
+
   return eventChannel((emmiter) => {
-    firebase.db.collection('users').doc(userId).collection('invoices').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+    invoicesUnsubscribe = firebase.db.collection('users').doc(userId).collection('invoices').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
       const invoices = [];
 
       snapshot.forEach(doc => {
@@ -19,7 +21,7 @@ function subscribeToInvoices(userId) {
       emmiter(invoices);
     });
 
-    return () => null;
+    return () => invoicesUnsubscribe();
   });
 }
 
@@ -35,7 +37,7 @@ export function* getInvoicesSaga(action) {
     yield put({ type: 'INVOICES_SET_REDUX', payload: { invoices } });
   });
 
-  yield take('FETCH_INVOICES_CANCEL')
+  yield take('FETCH_INVOICES_CANCEL');
   channel.close();
 }
 

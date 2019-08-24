@@ -4,3 +4,9 @@ export function saveUserSettings(settings) {
     payload: { settings },
   };
 }
+
+export function logout() {
+  return {
+    type: 'LOGOUT_USER',
+  };
+}

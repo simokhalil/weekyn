@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { translate } from 'react-polyglot';
@@ -33,7 +34,7 @@ function ElevationScroll(props) {
 
 const AdapterLink = React.forwardRef((props, ref) => <Link innerRef={ref} {...props} />);
 
-const NavBar = ({ classes, location, t, ...rest }) => {
+const NavBar = ({ classes, location, t, user, ...rest }) => {
 
   const menuItems = [
     {
@@ -57,7 +58,7 @@ const NavBar = ({ classes, location, t, ...rest }) => {
         <AppBar color="inherit" className="navbarFixedTop navbar-expand-lg">
           <Toolbar className="navbar">
             <div className="container" >
-              <Link className="navbar-brand" to="/" style={{ flexGrow: 1 }}>Weekyn</Link>
+              <Link className="navbar-brand" to="/" style={{ flexGrow: 1 }}>{AppConfig.appName}</Link>
 
               {/* <ul className="navbar-nav ml-auto" style={{ display: 'flex' }}>
                 {menuItems.map((menuItem, menuItemIndex) => (
@@ -67,7 +68,14 @@ const NavBar = ({ classes, location, t, ...rest }) => {
                   ))}
               </ul> */}
 
-              <Button variant="outlined" color="primary" size="large" component={AdapterLink} className={classes.buttonLink} to={AppConfig.routePaths.login}>Connexion</Button>
+              {!user
+                ? (
+                  <Button variant="outlined" color="primary" size="large" component={AdapterLink} className={classes.buttonLink} to={AppConfig.routePaths.login}>Connexion</Button>
+                )
+                : (
+                  <Button variant="contained" color="primary" size="large" component={AdapterLink} className={classes.buttonLink} to={AppConfig.routePaths.homepage}>Dashboard</Button>
+                )
+              }
               {/* <Button variant="outlined" color="primary" size="medium" component={AdapterLink} className={classes.buttonLink} to={AppConfig.routePaths.signup}>Inscription</Button> */}
             </div>
           </Toolbar>
@@ -79,7 +87,6 @@ const NavBar = ({ classes, location, t, ...rest }) => {
         <nav className="navbar navbarFixedTop">
           <div className="container">
             <nav className="navbar navbar-expand-lg">
-              <a className="navbar-brand" href="/">Weekyn</a>
 
               <button className="navbar-toggler collapsed" type="button">
                 <span className="navbar-toggler-icon">
@@ -89,17 +96,7 @@ const NavBar = ({ classes, location, t, ...rest }) => {
 
               <div className="navbar-collapse collapse" id="navbarCollapse">
                 <ul className="navbar-nav ml-auto">
-                  {menuItems.map((menuItem, menuItemIndex) => (
-                    <li key={menuItemIndex} className={currentHash === menuItem.href ? 'current' : ''}>
-                      <a href={menuItem.href}>{menuItem.label}</a>
-                    </li>
-                  ))}
-                  <li className="discover-link">
-                    <Link to={AppConfig.routePaths.login} className="external discover-btn">Connexion</Link>
-                  </li>
-                  <li className="discover-link">
-                    <Link to={AppConfig.routePaths.signup} className="external discover-btn">Inscription</Link>
-                  </li>
+
                 </ul>
               </div>
             </nav>
@@ -108,6 +105,14 @@ const NavBar = ({ classes, location, t, ...rest }) => {
         </header> */}
     </>
   )
+};
+
+NavBar.propTypes = {
+  user: PropTypes.object,
+};
+
+NavBar.defaultProps = {
+  user: null,
 };
 
 export default withRouter(

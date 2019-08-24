@@ -81,7 +81,7 @@ class SideMenu extends Component {
         anchor="left"
       >
         <div className={classes.toolbar}>
-          <img src={LogoImage} className={classes.logo} alt="Weekyn" />
+          <img src={LogoImage} className={classes.logo} alt={AppConfig.appName} />
         </div>
 
         {sideMenuItems.map((sideMenuGroup, index) => (

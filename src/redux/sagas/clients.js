@@ -5,8 +5,10 @@ import { clientsDB, firebase } from '../../firebase/';
 import { store } from '../store';
 
 function subscribeToClients(userId, active = true) {
+  let clientsUsubscribe = null;
+
   return eventChannel((emmiter) => {
-    firebase.db.collection('users').doc(userId).collection('clients').orderBy('updatedAt', 'desc').onSnapshot(snapshot => {
+    clientsUsubscribe = firebase.db.collection('users').doc(userId).collection('clients').orderBy('updatedAt', 'desc').onSnapshot(snapshot => {
       const clients = [];
       const activeClients = [];
       const archivedClients = [];
@@ -35,7 +37,7 @@ function subscribeToClients(userId, active = true) {
       emmiter({ clients, activeClients, archivedClients });
     });
 
-    return () => null;
+    return () => clientsUsubscribe();
   });
 }
 
@@ -49,7 +51,7 @@ export function* getClientsSaga(action) {
     yield put({ type: 'CLIENTS_SET_REDUX', payload: { clients } });
   });
 
-  yield take('FETCH_CLIENTS_CANCEL')
+  yield take('FETCH_CLIENTS_CANCEL');
   channel.close();
 }
 

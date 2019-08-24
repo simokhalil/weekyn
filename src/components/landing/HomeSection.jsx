@@ -21,7 +21,7 @@ const HomeSection = ({ t }) => {
           </Grid>
 
           <Grid item md={5}>
-            <img src={ComputingImage} className="hero-image" style={{ width: '100%' }} alt="Weekyn" />
+            <img src={ComputingImage} className="hero-image" style={{ width: '100%' }} alt={AppConfig.appName} />
           </Grid>
         </Grid>
       </div>

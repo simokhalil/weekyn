@@ -101,34 +101,7 @@ class AppContainer extends React.Component {
             });
           })
       } else {
-
-        store.dispatch({
-          type: 'GET_USER_CANCEL',
-        });
-
-        store.dispatch({
-          type: 'FETCH_CLIENTS_CANCEL',
-        });
-
-        store.dispatch({
-          type: 'FETCH_INVOICES_CANCEL',
-        });
-
-        store.dispatch({
-          type: 'GET_PROJECTS_CANCEL',
-        });
-
-        store.dispatch({
-          type: 'USER_SIGNED_OUT',
-          data: {
-            redirectTo: location.pathname,
-          },
-        });
-
-        console.log('user not logged in => redirecting from ', this.props);
-
-        this.setState(() => ({ authUser: null, isLoading: false }));
-
+        store.dispatch({ type: 'LOGOUT_USER', payload: location.pathname });
         history.push(AppConfig.routePaths.login);
       }
     });

@@ -5,6 +5,7 @@ import { projectsDB, firebase } from '../../firebase/';
 import { store } from '../store';
 
 function subscribeToProjects(userId, clientId = null, active = true) {
+  let projectsUnsubscribe = null;
   return eventChannel((emmiter) => {
     let collectionRef = firebase.db.collection('users').doc(userId).collection('projects').where('active', '==', active).orderBy('createdAt', 'desc');
 
@@ -12,7 +13,7 @@ function subscribeToProjects(userId, clientId = null, active = true) {
       collectionRef = collectionRef.where('clientId', '==', clientId);
     }
 
-    collectionRef.onSnapshot(snapshot => {
+    projectsUnsubscribe = collectionRef.onSnapshot(snapshot => {
       const projects = [];
 
       snapshot.forEach(doc => {
@@ -25,7 +26,7 @@ function subscribeToProjects(userId, clientId = null, active = true) {
       emmiter(projects);
     });
 
-    return () => null;
+    return () => projectsUnsubscribe();
   });
 }
 
@@ -43,7 +44,7 @@ export function* getProjectsSaga(action) {
     yield put({ type: 'SET_PROJECT_LINES' });
   });
 
-  yield take('GET_PROJECTS_CANCEL')
+  yield take('GET_PROJECTS_CANCEL');
   channel.close();
 
   /* try {

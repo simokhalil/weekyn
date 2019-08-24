@@ -2,6 +2,8 @@ import React from 'react';
 
 import { withStyles } from '@material-ui/core';
 
+import AppConfig from 'AppConfig';
+
 const styles = {
   footer: {
     position: 'relative',
@@ -26,7 +28,7 @@ const Footer = ({ classes }) => {
     <div className={classes.footer} id="pricing">
       <div className="container">
         <div className={classes.center}>
-          <p className={classes.footerText}>Copyright © {year} Weekyn</p>
+          <p className={classes.footerText}>Copyright © {year} {AppConfig.appName}</p>
         </div>
       </div>
     </div>

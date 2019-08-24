@@ -1,16 +1,18 @@
 import { call, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 
-import { userDB, firebase } from '../../firebase/';
-import { store } from '../store';
+import AppConfig from '../../AppConfig';
+import { auth, userDB, firebase } from '../../firebase/';
+import { store, history } from '../store';
 
 function subscribeToUser(userId) {
+  let userUnsubscribe = null;
   return eventChannel((emmiter) => {
-    firebase.db.collection('users').doc(userId).onSnapshot(doc => {
+    userUnsubscribe = firebase.db.collection('users').doc(userId).onSnapshot(doc => {
       emmiter(doc.data());
     });
 
-    return () => null;
+    return () => userUnsubscribe();
   });
 }
 
@@ -25,7 +27,7 @@ export function* getUserSaga(action) {
     yield put({ type: 'USER_SET_REDUX', payload: { user } });
   });
 
-  yield take('GET_USER_CANCEL')
+  yield take('GET_USER_CANCEL');
   channel.close();
 }
 
@@ -48,9 +50,26 @@ export function* saveUserSettingsSaga(action) {
   }
 }
 
+export function* userSignOutSaga(action) {
+  yield put({ type: 'GET_USER_CANCEL' });
+  yield put({ type: 'FETCH_CLIENTS_CANCEL' });
+  yield put({ type: 'FETCH_INVOICES_CANCEL' });
+  yield put({ type: 'GET_PROJECTS_CANCEL' });
+
+  yield put({
+    type: 'USER_SIGNED_OUT',
+    data: {
+      redirectTo: action.payload,
+    },
+  });
+
+  auth.doSignOut();
+}
+
 function* watch() {
   yield takeLatest('GET_USER_SAGA', getUserSaga);
   yield takeLatest('SAVE_USER_SETTINGS', saveUserSettingsSaga);
+  yield takeLatest('LOGOUT_USER', userSignOutSaga);
 }
 
 export default watch;
