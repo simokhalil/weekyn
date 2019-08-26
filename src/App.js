@@ -6,6 +6,7 @@ import AppConfig from './AppConfig';
 import AppContainer from './components/containers/AppContainer';
 // import AuthenticatedRoute from './components/auth/AuthenticatedRoute';
 
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import LandingPage from './pages/landing-page/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from 'pages/auth/SignupPage';
@@ -21,7 +22,7 @@ class App extends React.Component {
   componentDidMount() {
     this.userAuthStateChangedUnsubscribe = firebase.auth.onAuthStateChanged((authUser) => {
       console.log('AppContainer : Got authUser', authUser);
-      if (authUser) {
+      if (authUser && authUser.emailVerified) {
         let infos = {
           email: authUser.email,
           uid: authUser.uid,
@@ -66,6 +67,7 @@ class App extends React.Component {
         <Route path={AppConfig.routePaths.landingPage} exact component={LandingPage} />
         <Route path={AppConfig.routePaths.login} exact component={LoginPage} />
         <Route path={AppConfig.routePaths.signup} exact component={SignupPage} />
+        <Route path={AppConfig.routePaths.forgotPassword} exact component={ForgotPasswordPage} />
         <Route path={AppConfig.routePaths.homepage} component={AppContainer} fallbackComponent={LoginPage} />
       </Switch>
 

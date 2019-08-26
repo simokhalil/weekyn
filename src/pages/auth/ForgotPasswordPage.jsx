@@ -19,11 +19,10 @@ import '../../stylesheets/login.scss';
 
 const INITIAL_STATE = {
   email: '',
-  password: '',
   error: null,
 };
 
-class LoginPage extends React.Component {
+class ForgotPasswordPage extends React.Component {
 
   state = {
     ...INITIAL_STATE,
@@ -32,8 +31,10 @@ class LoginPage extends React.Component {
   componentDidMount() {
     const { currentUser, history } = this.props;
     if (currentUser) {
-      history.push(this.props.redirectTo);
+      history.push(this.props.homepage);
     }
+
+    console.log('this.props.location', this.props);
   }
 
   componentWillReceiveProps(newProps) {
@@ -43,30 +44,17 @@ class LoginPage extends React.Component {
     }
   }
 
-  getValidationState(attr) {
-    const length = this.state[attr].length;
-
-    switch (attr) {
-      case 'email':
-        if (length <= 8) {
-          return null;
-        }
-        return this.validateEmail(this.state.email) ? 'success' : 'error';
-
-      case 'password':
-        if (length <= 3) {
-          return null;
-        }
-        return 'success';
-
-      default:
-        return null;
+  isFormValid = () => {
+    const { email } = this.state;
+    if (email.length <= 8) {
+      return false;
     }
+    return this.validateEmail(this.state.email);
   }
 
-  setStateByProp = (prop, value) => {
+  handleEmailChange = (value) => {
     this.setState({
-      [prop]: value,
+      email: value,
     });
   };
 
@@ -75,17 +63,16 @@ class LoginPage extends React.Component {
     return re.test(String(email).toLowerCase());
   }
 
-  login = async (e) => {
+  submit = async (e) => {
     e.preventDefault();
 
-    const { email, password } = this.state;
+    const { email } = this.state;
 
     try {
-      await auth.doSignInWithEmailAndPassword(email, password);
+      await auth.doPasswordReset(email);
 
-      this.props.history.push(AppConfig.routePaths.homepage);
+      // this.props.history.push(AppConfig.routePaths.homepage);
     } catch (error) {
-      console.log('error login in user', error);
       this.setStateByProp('error', error);
     }
 
@@ -98,12 +85,10 @@ class LoginPage extends React.Component {
   }
 
   render() {
-    const { email, password, error } = this.state;
+    const { email, error } = this.state;
     const { t } = this.props;
 
-    const isInvalid =
-      password === '' ||
-      email === '';
+    const isInvalid = !this.isFormValid();
 
     return (
       <div className="login-page">
@@ -113,57 +98,45 @@ class LoginPage extends React.Component {
           <GridItem xs={12}>
 
             <Card className="card">
-              <CardHeader title={t('login.authenticate')} />
+              <CardHeader title={t('login.resetMyPassword')} />
 
               <CardContent>
 
-                {error && <p>{error.message}</p>}
+                {error && <p>{t(`firebaseErrors.${error.code}`)}</p>}
 
-                <form onSubmit={this.login} className="form">
+                <form onSubmit={this.submit} className="form">
                   <CustomInput
                     label={t('login.email')}
                     id="email"
                     type="email"
-                    onChange={(value) => this.setStateByProp('email', value)}
+                    onChange={(value) => this.handleEmailChange(value)}
                     value={email}
                   />
 
-                  <CustomInput
-                    label={t('login.password')}
-                    id="password"
-                    type="password"
-                    onChange={(value) => this.setStateByProp('password', value)}
-                    value={password}
-                  />
-
-                  <Button type="submit" disabled={isInvalid} variant="contained" size="large" color="primary">{t('login.authenticate')}</Button>
+                  <Button type="submit" disabled={isInvalid} variant="contained" size="large" color="primary">{t('login.resetMyPassword')}</Button>
                 </form>
               </CardContent>
 
             </Card>
 
             <div className="actions">
-              <Link to={AppConfig.routePaths.forgotPassword} className="link">{t('login.forgotPassword')}</Link>
+              <Link to={AppConfig.routePaths.login} className="link">{t('login.backToAuthentication')}</Link>
             </div>
 
           </GridItem>
         </GridContainer>
-
-        <div className="actions-container">
-          <Link to={AppConfig.routePaths.signup} className="link">{t('login.signup')}</Link>
-        </div>
       </div>
     );
   }
 }
 
-LoginPage.propTypes = {
+ForgotPasswordPage.propTypes = {
   history: PropTypes.any.isRequired,
   redirectTo: PropTypes.string,
   currentUser: PropTypes.object,
 };
 
-LoginPage.defaultProps = {
+ForgotPasswordPage.defaultProps = {
   currentUser: auth.currentUser,
   redirectTo: AppConfig.routePaths.homepage,
 };
@@ -174,8 +147,9 @@ function mapStateToProps(state) {
     redirectTo: state.users.redirectTo,
   };
 }
+
 export default connect(mapStateToProps)(
   translate()(
-    LoginPage
+    ForgotPasswordPage,
   )
 );

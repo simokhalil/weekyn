@@ -11,6 +11,7 @@ export default {
     confirm: 'Je confirme',
     createdAt: 'Créé le',
     edit: 'Modifier',
+    goBack: 'Retour',
     noDataToShow: 'Aucune donnée à afficher',
     ok: 'Ok',
     restore: 'Restaurer',
@@ -43,6 +44,12 @@ export default {
     },
   },
 
+  firebaseErrors: {
+    'auth/email-already-in-use': 'Cette adresse email est déjà utilisée',
+    'auth/invalid-email': 'Adresse email invalide',
+    'auth/weak-password': 'Le mot de passe est trop faible, il doit contenir au moins 6 caractères',
+  },
+
   login: {
     authenticate: 'Se connecter',
     email: 'Email',
@@ -50,6 +57,8 @@ export default {
     forgotPassword: 'Mot de passe oublié ?',
     signup: 'Pas de compte ? Inscription',
     signout: 'Se déconnecter',
+    resetMyPassword: 'Réinitialiser mon mot de passe',
+    backToAuthentication: 'Retour à la connexion',
   },
 
   signup: {

@@ -10,6 +10,7 @@ export default {
     landingPage: '/',
     login: '/login',
     signup: '/signup',
+    forgotPassword: '/forgot-password',
     passwordReset: '/password-reset',
     homepage: '/app',
     clients: '/app/clients',

@@ -80,7 +80,7 @@ export default function projects(state = INITIAL_STATE, action) {
         });
 
         workingDays[month] = {
-          name: month + 1,
+          name: moment([currentYear, month]).format('MMM'),
           jours: nbDays
         };
       }

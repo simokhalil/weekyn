@@ -89,18 +89,26 @@ class SignupPage extends React.Component {
     try {
       const authUser = await auth.doCreateUserWithEmailAndPassword(email, password);
 
+      await authUser.user.updateProfile({ displayName: name });
+
       try {
         await userDB.doCreateUser(authUser.user.uid, name, email, { ...INITIAL_SETTINGS });
+
+        await authUser.user.sendEmailVerification();
+
+        await auth.doSignOut();
+
         this.setState(() => ({ ...INITIAL_STATE }));
         history.push(AppConfig.routePaths.login);
 
       } catch (error) {
-        console.log('error creatin db user');
+        console.log('error creatin db user', error);
+        await authUser.user.delete();
         this.setStateByProp('error', error);
       }
 
     } catch (error) {
-      console.log('error creatin auth user');
+      console.log('error creatin auth user', error);
       this.setStateByProp('error', error);
     }
 
@@ -120,15 +128,12 @@ class SignupPage extends React.Component {
 
     return (
       <div className="login-page">
-        <GridContainer justify="center">
-          <GridItem xs={12}>
-
-            <Card className="card">
+        <Card className="card" style={{ width: '430px' }}>
               <CardHeader title={t('signup.signUp')} />
 
               <CardContent>
 
-                {error && <p>{error.message}</p>}
+                {error && <div className="error_message">{t(`firebaseErrors.${error.code}`)}</div>}
 
                 <form onSubmit={this.signup} className="form">
                   <CustomInput
@@ -161,8 +166,6 @@ class SignupPage extends React.Component {
 
             </Card>
 
-          </GridItem>
-        </GridContainer>
 
         <div className="actions-container">
           <Link to={AppConfig.routePaths.login} className="link">{t('signup.login')}</Link>

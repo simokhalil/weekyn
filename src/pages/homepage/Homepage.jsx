@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { connect } from 'react-redux';
 
@@ -40,24 +40,23 @@ class Homepage extends React.Component {
         <ContentToolbar title="Dashboard" />
 
         <Grid container>
-          <Grid item xs={12} md={6}>
-            <Paper elevation={3} style={{ padding: '20px' }}>
-              <h3>Jours travaillés cette année</h3>
-              <LineChart
-                width={500}
-                height={300}
-                data={workedDaysForCurrentYear}
-                margin={{
-                  top: 5, right: 30, left: 20, bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="jours" stroke="#8884d8" activeDot={{ r: 8 }} />
-              </LineChart>
+          <Grid item xs={12} md={12}>
+            <Paper elevation={3} style={{ padding: '20px 0' }}>
+              <h3>Jours travaillés en {today.getFullYear()}</h3>
+              <ResponsiveContainer width="100%" minHeight={300}>
+                <LineChart
+                  data={workedDaysForCurrentYear}
+                  margin={{
+                    top: 5, right: 30, left: 0, bottom: 5,
+                  }}
+                >
+                  <CartesianGrid vertical={false} strokeDasharray="3 0" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="jours" stroke="#4F81BC" strokeWidth={2} activeDot={{ r: 8 }} />
+                </LineChart>
+              </ResponsiveContainer>
             </Paper>
           </Grid>
         </Grid>

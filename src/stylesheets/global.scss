@@ -17,3 +17,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+* {
+  box-sizing: border-box;
+}
+
+.success_message, .warning_message, .error_message, .promo_message, .info_message, .resolved_message {
+  width: 100%;
+  padding: 14px 16px;
+  border-left-width: 3px;
+  border-left-style: solid;
+  box-shadow: 0 8px 16px 0px rgba(10, 14, 29, 0.04), 0px 8px 64px 0px rgba(10, 14, 29, 0.08);
+}
+.error_message, .error_message a {
+  color: #e31519;
+  border-color: #e31519;
+}

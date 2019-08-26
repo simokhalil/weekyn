@@ -65,7 +65,7 @@ class AppContainer extends React.Component {
 
     this.userAuthStateChangedUnsubscribe = firebase.auth.onAuthStateChanged((authUser) => {
       console.log('AppContainer : Got authUser', authUser);
-      if (authUser) {
+      if (authUser && authUser.emailVerified) {
         let infos = {
           email: authUser.email,
           uid: authUser.uid,
