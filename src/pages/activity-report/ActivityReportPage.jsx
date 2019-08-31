@@ -14,6 +14,8 @@ import ArrowRightIcon from '@material-ui/icons/ArrowForward';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import PdfIcon from '@material-ui/icons/PictureAsPdfOutlined';
+import NoteAddIcon from '@material-ui/icons/NoteAddOutlined';
+import NoteDescriptionIcon from '@material-ui/icons/DescriptionOutlined';
 
 import Button from '../../components/form/Button';
 import Content from 'components/content/Content';
@@ -151,7 +153,8 @@ class ActivityReportPage extends React.Component {
 
   isWeekend = (dayOfMonth) => {
     const { currentMonth } = this.state;
-    return moment(currentMonth).date(dayOfMonth).day() % 6 === 0;
+    const holydays = ['0101', '2104', '2204', '0105', '0805', '3005', '0906', '1407', '1508', '0111', '1111', '2512'];
+    return moment(currentMonth).date(dayOfMonth).day() % 6 === 0 || holydays.includes(moment(currentMonth).date(dayOfMonth).format('DDMM'));
   };
 
   onInputBlur = (projectLineIndex) => {
@@ -220,7 +223,14 @@ class ActivityReportPage extends React.Component {
     const daysArray = [...Array(monthLength).keys()];
 
     return daysArray.reduce((total, day) => {
-      return total + (projectLine.activity[currentYear][currentMonthIndex][day] || 0);
+      return total + (
+        projectLine.activity
+          && projectLine.activity[currentYear]
+          && projectLine.activity[currentYear][currentMonthIndex]
+          && projectLine.activity[currentYear][currentMonthIndex][day]
+        ? projectLine.activity[currentYear][currentMonthIndex][day]
+        : 0
+      );
     }, 0, 0);
   }
 
@@ -247,11 +257,12 @@ class ActivityReportPage extends React.Component {
       totalExclTax: totalAmount,
       totalInclTax: totalAmount * 1.2,
       client: {
-        name: 'Generated - Name',
-        address: 'Generated - Address',
-        postalCode: '44000',
-        city: 'Thouaré',
-        country: 'France',
+        id: projectLine.client.id,
+        name: projectLine.client.name,
+        address: projectLine.client.address,
+        postalCode: projectLine.client.postalCode,
+        city: projectLine.client.city,
+        country: projectLine.client.country,
       },
       lines: [{
         description: projectLine.name,
@@ -262,12 +273,19 @@ class ActivityReportPage extends React.Component {
       }],
     };
 
-    saveInvoice(invoice);
+    saveInvoice(invoice, projectLine.id, currentYear, currentMonthIndex);
   }
+
+  goToProjectLineInvoice = (invoiceId) => {
+    const { history } = this.props;
+    history.push(`${AppConfig.routePaths.invoices}/${invoiceId}`);
+  };
 
   render() {
     const { currentMonth, maxMonthIndex, isProjectsListDialogOpen, monthLength } = this.state;
     const { classes, clients, currentMonthIndex, currentYear, t, projectLines } = this.props;
+
+    console.log('projectLines', projectLines);
 
     const daysArray = [...Array(monthLength).keys()];
 
@@ -332,9 +350,18 @@ class ActivityReportPage extends React.Component {
                   </td>
 
                   <td className={classes.tableCol}>
-                    <IconButton aria-label="delete" size="small" onClick={() => this.makeInvoice(projectLine)}>
-                      <PdfIcon fontSize="inherit" />
-                    </IconButton>
+                    {projectLine.invoices[currentYear] && projectLine.invoices[currentYear][currentMonthIndex]
+                      ? (
+                        <IconButton aria-label="delete" size="small" onClick={() => this.goToProjectLineInvoice(projectLine.invoices[currentYear][currentMonthIndex])}>
+                          <NoteDescriptionIcon fontSize="inherit" />
+                        </IconButton>
+                      )
+                      : (
+                        <IconButton aria-label="delete" size="small" onClick={() => this.makeInvoice(projectLine)}>
+                          <NoteAddIcon fontSize="inherit" />
+                        </IconButton>
+                      )
+                    }
                   </td>
 
                   <td className={classes.tableCol}>

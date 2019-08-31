@@ -38,3 +38,15 @@ export const setProjectActivity = (userId, projectId, year, month, activity) => 
     },
   }, { merge: true });
 }
+
+export const addProjectInvoice = (userId, projectId, year, month, invoiceId) => {
+  const collection = db.collection('users').doc(userId).collection('projects').doc(projectId);
+
+  return collection.set({
+    invoices: {
+      [year]: {
+        [month]: invoiceId,
+      },
+    },
+  }, { merge: true });
+}

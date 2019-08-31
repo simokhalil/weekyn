@@ -14,7 +14,7 @@ export function setCurrentYearAndMonth(year, month) {
 
 export function getProjectsByYearAndMonth() {
   return {
-    type: 'SET_PROJECT_LINES',
+    type: 'GET_PROJECTS_BY_YEAR_AND_MONTH',
   };
 }
 

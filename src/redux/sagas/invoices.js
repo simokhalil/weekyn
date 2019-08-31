@@ -1,7 +1,7 @@
 import { eventChannel } from 'redux-saga';
 import { call, put, take, takeEvery, takeLatest } from 'redux-saga/effects';
 
-import { invoicesDB, firebase } from '../../firebase/';
+import { invoicesDB, projectsDB, firebase } from '../../firebase/';
 import { store } from '../store';
 
 function subscribeToInvoices(userId) {
@@ -42,7 +42,7 @@ export function* getInvoicesSaga(action) {
 }
 
 export function* saveInvoiceSaga(action) {
-  const { invoice: { id, ...invoice} } = action.payload;
+  const { invoice: { id, ...invoice }, projectId, year, month } = action.payload;
 
   const state = store.getState();
   const currentUser = state.users.authUser;
@@ -51,7 +51,10 @@ export function* saveInvoiceSaga(action) {
     if (id) {
       yield invoicesDB.saveInvoice(currentUser.uid, id, invoice);
     } else {
-      yield invoicesDB.createInvoice(currentUser.uid, invoice);
+      const createdInvoice = yield invoicesDB.createInvoice(currentUser.uid, { ...invoice, number: currentUser.invoicesCount + 1 });
+
+      console.log('createdInvoice', createdInvoice);
+      yield projectsDB.addProjectInvoice(currentUser.uid, projectId, year, month, createdInvoice.id);
     }
 
     yield put({ type: 'SAVE_INVOICE_SUCCESS' });

@@ -5,10 +5,10 @@ export function getInvoices() {
   };
 }
 
-export function saveInvoice(invoice) {
+export function saveInvoice(invoice, projectId, year = null, month = null) {
   return {
     type: 'SAVE_INVOICE',
-    payload: { invoice },
+    payload: { invoice, projectId, year, month },
   };
 }
 

@@ -5,6 +5,7 @@ import { translate } from 'react-polyglot';
 import { withRouter } from 'react-router';
 
 import {
+  ClickAwayListener,
   IconButton,
   ListItemText,
   Menu,
@@ -24,7 +25,11 @@ import * as DateUtils from '../../utils/date';
 import * as ProjectsActions from '../../redux/actions/projects';
 
 const styles = () => ({
-
+  invoiceMenu: {
+    root: {
+      boxShadow: 'none',
+    },
+  },
 });
 
 class ProjectsList extends Component {
@@ -33,10 +38,16 @@ class ProjectsList extends Component {
   };
 
   handleInvoiceMenuOpen = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     this.setState({ anchorEl: event.currentTarget });
   };
 
-  handleInvoiceMenuClose = () => {
+  handleInvoiceMenuClose = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     this.setState({ anchorEl: null });
   };
 
@@ -57,9 +68,9 @@ class ProjectsList extends Component {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell>{t('invoices.date')}</TableCell>
               <TableCell align="right">{t('invoices.number')}</TableCell>
-              <TableCell align="right">{t('invoices.clientName')}</TableCell>
+              <TableCell>{t('invoices.date')}</TableCell>
+              <TableCell align="left">{t('invoices.clientName')}</TableCell>
               <TableCell align="right">{t('invoices.amountExclTax')}</TableCell>
               <TableCell align="right">{t('invoices.status')}</TableCell>
               <TableCell align="right">{t('common.actions')}</TableCell>
@@ -85,34 +96,33 @@ class ProjectsList extends Component {
               )}
 
               {invoices && invoices.map((invoice, invoiceIndex) => (
-                <TableRow key={invoiceIndex} onClick={() => this.gotoInvoice(invoice.id)}>
+                <TableRow key={invoiceIndex} onClick={() => this.gotoInvoice(invoice.id)} className="link" hover>
+                  <TableCell align="right">{invoice.number}</TableCell>
                   <TableCell component="th" scope="row">
                     <ListItemText primary={DateUtils.formatDate(invoice.date)} secondary={invoice.title} />
                   </TableCell>
-                  <TableCell align="right">{invoice.number}</TableCell>
-                  <TableCell align="right">{invoice.client.name}</TableCell>
+                  <TableCell align="left">{invoice.client.name}</TableCell>
                   <TableCell align="right">{invoice.totalExclTax}</TableCell>
-                  <TableCell align="right">{invoice.status}</TableCell>
+                  <TableCell align="right">{t(`invoices.statusLabel.${invoice.status}`)}</TableCell>
                   <TableCell align="right">
-                    <>
-                      <IconButton
-                        aria-owns={`action-menu-${invoice.id}`}
-                        aria-haspopup="true"
-                        onClick={this.handleInvoiceMenuOpen}
-                      >
-                        <MoreHorizIcon />
-                      </IconButton>
+                    <IconButton
+                      aria-owns={`action-menu-${invoice.id}`}
+                      aria-haspopup="true"
+                      onClick={this.handleInvoiceMenuOpen}
+                    >
+                      <MoreHorizIcon />
+                    </IconButton>
 
-                      <Menu
-                        id={`action-menu-${invoice.id}`}
-                        anchorEl={anchorEl}
-                        open={isInvoiceMenuOpen}
-                        onClose={this.handleProjectMenuClose}
-                      >
-                        <MenuItem onClick={this.handleProjectMenuClose} style={{ fontSize: '0.8rem' }}>{t('common.download')}</MenuItem>
-                        <MenuItem onClick={this.handleProjectMenuClose} style={{ fontSize: '0.8rem' }}>{t('common.delete')}</MenuItem>
-                      </Menu>
-                    </>
+                    <Menu
+                      id={`action-menu-${invoice.id}`}
+                      anchorEl={anchorEl}
+                      open={isInvoiceMenuOpen}
+                      onClose={this.handleInvoiceMenuClose}
+                      classes={styles.invoiceMenu}
+                    >
+                      <MenuItem onClick={this.handleInvoiceMenuClose} style={{ fontSize: '0.8rem' }}>{t('common.download')}</MenuItem>
+                      <MenuItem onClick={this.handleInvoiceMenuClose} style={{ fontSize: '0.8rem' }}>{t('common.delete')}</MenuItem>
+                    </Menu>
                   </TableCell>
                 </TableRow>
 

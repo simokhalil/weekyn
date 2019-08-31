@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { store } from '../store';
 
 const INITIAL_STATE = {
   projects: [],
@@ -28,11 +29,7 @@ export default function projects(state = INITIAL_STATE, action) {
     }
 
     case 'SET_PROJECT_LINES': {
-      const { currentYear, currentMonthIndex } = state;
-
-      const projectLines = state.projects.filter((project => {
-        return (!!project.activity && !!project.activity[currentYear] && !!project.activity[currentYear][currentMonthIndex]);
-      }));
+      const projectLines = action.payload;
 
       return {
         ...state,

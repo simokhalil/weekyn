@@ -20,6 +20,7 @@ $formWidth: 400px;
   }
 
   .card {
+    width: calc(#{$formWidth} + 100px);
     border-radius: 3px;
     text-align: center;
   }
@@ -27,6 +28,7 @@ $formWidth: 400px;
   .form {
     width: $formWidth;
     padding: 30px 40px 40px;
+    margin: auto;
   }
 
   .actions-container {

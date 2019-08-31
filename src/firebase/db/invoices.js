@@ -7,7 +7,7 @@ import { db } from '../firebase';
  * @param {*} userId
  * @param {*} clientId
  */
-export const createInvoice = (userId, invoice) => {
+export const createInvoice = async (userId, invoice) => {
   const collection = db.collection('users').doc(userId).collection('invoices');
 
   const now = (new Date()).getTime();
@@ -15,7 +15,7 @@ export const createInvoice = (userId, invoice) => {
   const userRef = db.collection('users').doc(userId);
   const increment = firebase.firestore.FieldValue.increment(1);
 
-  userRef.update({ reads: increment });
+  userRef.update({ invoicesCount: increment });
 
   return collection.add({
     ...invoice,

@@ -28,7 +28,7 @@ import * as DateUtils from '../../utils/date';
 const styles = () => ({
   clientsItemLink: {
     textDecoration: 'none',
-    color: 'inherit',
+    color: 'rgba(0, 0, 0, 0.87)',
 
     '&:hover': {
       background: '#f4f4f7',

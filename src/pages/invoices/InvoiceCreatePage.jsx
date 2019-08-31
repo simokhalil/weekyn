@@ -169,6 +169,10 @@ class InvoiceCreatePage extends Component {
           id: invoiceId,
         },
         isLoading: false,
+      }, () => {
+          if (currentUser.settings) {
+            this.getUserSettings(currentUser.settings);
+          }
       });
     } else {
       this.setState({
@@ -383,7 +387,7 @@ class InvoiceCreatePage extends Component {
 
               <div className="invoiceEditorBody">
                 <div className="invoiceType">
-                  <span>Facture</span>
+                  <span>{t(`invoices.newInvoiceTitle.${invoice.status}`, { number: invoice.number })}</span>
                 </div>
 
                 <input
