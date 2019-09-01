@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { CssBaseline, withStyles } from '@material-ui/core';
@@ -168,8 +168,9 @@ class AppContainer extends React.Component {
             />
 
             <Switch>
-              <Route path={AppConfig.routePaths.homepage} exact component={Homepage} />
+              <Route path={AppConfig.routePaths.homepage} exact render={() => <Redirect to={AppConfig.routePaths.dashboard} />} />
 
+              <Route path={AppConfig.routePaths.dashboard} exact component={Homepage} />
 
               <Route path={AppConfig.routePaths.clients} component={ClientsPage} />
 

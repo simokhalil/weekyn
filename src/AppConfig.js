@@ -13,6 +13,7 @@ export default {
     forgotPassword: '/forgot-password',
     passwordReset: '/password-reset',
     homepage: '/app',
+    dashboard: '/app/dashboard',
     clients: '/app/clients',
     clientsArchived: '/app/clients/archived',
     clientAdd: '/app/clients/add',

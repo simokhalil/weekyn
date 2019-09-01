@@ -20,7 +20,7 @@ export default [
   {
     id: 'dashboard',
     icon: DashboardIcon,
-    path: AppConfig.routePaths.homepage,
+    path: AppConfig.routePaths.dashboard,
     items: [],
   },
   // section

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, matchPath } from 'react-router-dom';
 import { translate } from 'react-polyglot';
 
 import { Drawer, List, withStyles } from '@material-ui/core';
@@ -88,7 +88,7 @@ class SideMenu extends Component {
           <div key={`group-${index}`}>
 
             <List>
-              <Link to={sideMenuGroup.path} className={classNames(classes.menuItem, { selected: location.pathname.includes(sideMenuGroup.path) })}>
+              <Link to={sideMenuGroup.path} className={classNames(classes.menuItem, { selected: !!matchPath(location.pathname, sideMenuGroup.path) })}>
                 {!status[sideMenuGroup.id] && (
                   <div><sideMenuGroup.icon className={classes.menuItemIcon} /></div>
                 )}
