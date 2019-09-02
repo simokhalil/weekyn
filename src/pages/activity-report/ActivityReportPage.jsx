@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import classNames from 'classnames';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
@@ -7,15 +8,15 @@ import { translate } from 'react-polyglot';
 import {
   CardHeader,
   IconButton,
+  Tooltip,
   withStyles,
 } from '@material-ui/core';
 
 import ArrowRightIcon from '@material-ui/icons/ArrowForward';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import PdfIcon from '@material-ui/icons/PictureAsPdfOutlined';
-import NoteAddIcon from '@material-ui/icons/NoteAddOutlined';
-import NoteDescriptionIcon from '@material-ui/icons/DescriptionOutlined';
+import NoteAddIcon from '@material-ui/icons/PlaylistAdd';
+import NoteDescriptionIcon from '@material-ui/icons/PlaylistAddCheck';
 
 import Button from '../../components/form/Button';
 import Content from 'components/content/Content';
@@ -28,7 +29,8 @@ import ProjectsListDialog from 'components/activity/ProjectsListDialog';
 import AppConfig from 'AppConfig';
 
 moment.locale('fr');
-const cellWidth = '40px';
+const cellWidth = '36px';
+const cellHeight = '40px';
 
 const styles = theme => ({
   root: {
@@ -38,7 +40,7 @@ const styles = theme => ({
   },
   table: {
     width: '100%',
-    fontSize: '10px',
+    fontSize: '12px',
     textAlign: 'center',
     borderSpacing: 0,
     borderCollapse: 'collapse',
@@ -47,12 +49,13 @@ const styles = theme => ({
     width: 'auto',
     height: '30px',
     border: '1px solid #aaa',
-    padding: 0,
+    padding: '5px',
     margin: 0,
+    textAlign: 'left',
   },
   tableCol: {
     width: cellWidth,
-    height: cellWidth,
+    height: cellHeight,
     minWidth: cellWidth,
     maxWidth: cellWidth,
     border: '1px solid #aaa',
@@ -69,6 +72,13 @@ const styles = theme => ({
     '&[readonly]': {
       cursor: 'default',
     },
+  },
+  bold: {
+    fontSize: '12px',
+    fontWeight: 'bold',
+  },
+  smallFont: {
+    fontSize: '10px',
   },
 });
 
@@ -320,11 +330,11 @@ class ActivityReportPage extends React.Component {
         </div>
 
         <table className={classes.table}>
-          <thead style={{ fontWeight: '600' }}>
+          <thead style={{ fontWeight: '700', background: '#eee' }}>
             <tr>
               <>
-                <td className={classes.tableFirstCol}>Clients / Projets</td>
                 <td className={classes.tableCol}>FA</td>
+                <td className={classes.tableFirstCol}>Clients / Projets</td>
                 <td className={classes.tableCol} />
                 <td className={classes.tableCol}>Tot</td>
 
@@ -345,23 +355,28 @@ class ActivityReportPage extends React.Component {
             {projectLines.map((projectLine, projectLineIndex) => (
               <tr key={projectLineIndex}>
                 <>
-                  <td className={classes.tableFirstCol}>
-                    {projectLine.name}
-                  </td>
-
                   <td className={classes.tableCol}>
                     {projectLine.invoices[currentYear] && projectLine.invoices[currentYear][currentMonthIndex]
                       ? (
-                        <IconButton aria-label="delete" size="small" onClick={() => this.goToProjectLineInvoice(projectLine.invoices[currentYear][currentMonthIndex])}>
-                          <NoteDescriptionIcon fontSize="inherit" />
-                        </IconButton>
+                        <Tooltip title="Visualiser la facture">
+                          <IconButton aria-label="delete" size="small" style={{ fontSize: '24px'}} onClick={() => this.goToProjectLineInvoice(projectLine.invoices[currentYear][currentMonthIndex])}>
+                            <NoteDescriptionIcon fontSize="inherit" />
+                          </IconButton>
+                        </Tooltip>
                       )
                       : (
-                        <IconButton aria-label="delete" size="small" onClick={() => this.makeInvoice(projectLine)}>
-                          <NoteAddIcon fontSize="inherit" />
-                        </IconButton>
+                        <Tooltip title="Générer la facture">
+                          <IconButton aria-label="delete" size="small" style={{ fontSize: '24px' }} onClick={() => this.makeInvoice(projectLine)}>
+                            <NoteAddIcon fontSize="inherit" />
+                          </IconButton>
+                        </Tooltip>
                       )
                     }
+                  </td>
+
+                  <td className={classes.tableFirstCol}>
+                    {projectLine.name}<br />
+                    {projectLine.client.name}
                   </td>
 
                   <td className={classes.tableCol}>
@@ -370,7 +385,7 @@ class ActivityReportPage extends React.Component {
                     </IconButton>
                   </td>
 
-                  <td className={classes.tableCol}>
+                  <td className={classNames(classes.tableCol, classes.bold)}>
                     {this.getProjectTotalDays(projectLine)}
                   </td>
 
@@ -378,7 +393,7 @@ class ActivityReportPage extends React.Component {
                   {daysArray.map((day, index) => (
                     <td
                       key={index}
-                      className={classes.tableCol}
+                      className={classNames(classes.tableCol, classes.smallFont)}
                       style={{ backgroundColor: this.isWeekend(day + 1) ? '#eee' : 'transparent' }}
                     >
                       <input
