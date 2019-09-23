@@ -389,7 +389,6 @@ class ActivityReportPage extends React.Component {
                     {this.getProjectTotalDays(projectLine)}
                   </td>
 
-
                   {daysArray.map((day, index) => (
                     <td
                       key={index}

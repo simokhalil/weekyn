@@ -1,5 +1,29 @@
 {
   "projects": {
     "default": "weekyn-fea79"
+  },
+
+  "hosting": {
+    "public": "public",
+    "cleanUrls": true,
+    "rewrites": [ {
+      "source": "/version",
+      "function": "version"
+    }, {
+      "source": "/screenshot",
+      "function": "screenshot"
+    }, {
+      "source": "/pdf/activity",
+      "function": "pdfActivity"
+    }],
+    "ignore": [
+      "firebase.json",
+      "**/.md",
+      "**/node_modules/**"
+    ]
+  },
+
+  "functions": {
+    "source": "functions"
   }
 }
