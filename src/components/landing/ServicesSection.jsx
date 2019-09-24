@@ -4,6 +4,8 @@ import { Grid, Button } from '@material-ui/core';
 
 import ChartIcon from '@material-ui/icons/InsertChartOutlined';
 
+import Home2Image from '../../assets/images/home-02.png';
+
 const services = [
   {
     icon: <ChartIcon className="service-icon" />,
@@ -39,7 +41,7 @@ const ServicesSection = () => {
           </Grid>
 
           <Grid item md={6}>
-            <img src="http://demo.epic-webdesign.com/tf-essentials/v1/images/img10.png" className="box-shadow" style={{ width: '100%' }} />
+            <img src={Home2Image} alt="Weekyn Dashboard" className="box-shadow" style={{ width: '100%' }} />
           </Grid>
         </Grid>
       </div>
