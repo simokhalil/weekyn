@@ -41,7 +41,7 @@ class Homepage extends React.Component {
 
         <Grid container>
           <Grid item xs={12} md={12}>
-            <Paper elevation={3} style={{ padding: '20px 0' }}>
+            <Paper elevation={3} style={{ padding: '20px' }}>
               <h3>Jours travaillés en {today.getFullYear()}</h3>
               <ResponsiveContainer width="100%" minHeight={300}>
                 <LineChart

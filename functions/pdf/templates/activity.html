@@ -53,21 +53,23 @@
     <table>
       <thead>
         <th>Client / Projet</th>
-        {{ #each days }}
-          <th>{{this}}</th>
+        {{#each days}}
+        <th>{{this}}</th>
         {{/each}}
         <th></th>
       </thead>
 
       <tr>
-        <td>< Client - Projet ></td>
-        {{ #each activity }}
-          <td>
-            {{ #if @key == @index + 1 }}
-              {{ this }}
-            {{ /if }}
-          </td>
-        {{ /each }}
+        <td>
+          < Client - Projet>
+        </td>
+        {{#each activity}}
+        <td>
+          {{#if @key == @index + 1}}
+          {{ this }}
+          {{/if}}
+        </td>
+        {{/each}}
       </tr>
     </table>
   </div>

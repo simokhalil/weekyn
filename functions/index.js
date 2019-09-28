@@ -4,6 +4,7 @@ const functions = require('firebase-functions');
 const express = require('express');
 const puppeteer = require('puppeteer');
 const handlebars = require('handlebars');
+const Twig = require('twig');
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
@@ -49,89 +50,98 @@ const activityPdf = async (req, res) => {
 
   try {
     const data = {
-      'date': new Date().toISOString(),
-      'displayName': '<Display Name>',
-      'client': '<Client>',
-      'project': '<Project>',
-      'month': 'MM',
-      'year': 'YY',
-      days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
-      activity: {
-        1: 1,
-        2: 1,
-        5: 1,
-        6: 1,
-        8: 1,
-        9: 1,
-        12: 1,
-        13: 1,
-        14: 1,
-        15: 1,
-        16: 1,
-        19: 1,
-        20: 1,
-        21: 1,
-        22: 1,
-        23: 1,
-        26: 1,
-        27: 1,
-        28: 1,
-        30: 1,
+      "date": "2019-09-27",
+      "displayName": "< Display Name >",
+      "clientName": "< Client >",
+      "projectName": "< Project >",
+      "month": "MM",
+      "year": "YY",
+      "days": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
+      "activity": {
+        "1": 1,
+        "2": 1,
+        "5": 1,
+        "6": 1,
+        "8": 1,
+        "9": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "26": 1,
+        "27": 1,
+        "28": 1,
+        "30": 1
       }
     };
 
     const localTemplate = path.join(os.tmpdir(), 'localTemplate.html');
     const localPDFFile = path.join(os.tmpdir(), 'localPDFFile.pdf');
 
-    await bucket.file('/pdf/templates/activity.html').download({ destination: localTemplate });
+    await bucket.file('/pdf/templates/activity.twig').download({ destination: localTemplate });
 
     console.log("template downloaded locally");
 
     const source = fs.readFileSync(localTemplate, 'utf8');
-    const template = handlebars.compile(source);
 
-    console.log("template compiled with user data");
+    Twig.renderFile(localTemplate, data, async (err, html) => {
+      if (err) {
+        console.log('Error compiling tempalte', err);
+      }
 
-    const html = template(data);
+      // const template = handlebars.compile(source);
 
-    console.log("Got HTML");
+      // console.log("template compiled with user data");
 
-    const browser = await puppeteer.launch({
-      args: ['--no-sandbox']
-    });
+      // const html = template(data);
 
-    console.log("Browser Created");
+      console.log("Got HTML");
 
-    const page = await browser.newPage();
-
-    console.log("Opened new page");
-
-    // await page.setViewport({ width: 1122, height: 794, deviceScaleFactor: 1 });
-    await page.setContent(html, { waitUntil: 'networkidle2' });
-
-    console.log("Content set to page");
-
-    const buffer = await page.pdf({
-      path: localPDFFile,
-      format: 'A4',
-      landscape: true,
-      printBackground: true,
-    });
-
-    console.log("pdf created locally");
-
-    await browser.close();
-
-    // const userId = firebase.auth().currentUser.getIdToken(true);
-
-    return bucket.upload(localPDFFile, { destination: `/users/activity.pdf`, metadata: { contentType: 'application/pdf' } })
-      .then(() => {
-        res.type('application/pdf');
-        return res.send(buffer);
-      }).catch(error => {
-        console.error(error);
-        res.send("PDF created and uploaded!");
+      const browser = await puppeteer.launch({
+        args: ['--no-sandbox']
       });
+
+      console.log("Browser Created");
+
+      const page = await browser.newPage();
+
+      console.log("Opened new page");
+
+      // await page.setViewport({ width: 1122, height: 794, deviceScaleFactor: 1 });
+      await page.setContent(html, { waitUntil: 'networkidle2' });
+
+      console.log("Content set to page");
+
+      const buffer = await page.pdf({
+        path: localPDFFile,
+        format: 'A4',
+        landscape: true,
+        printBackground: true,
+      });
+
+      console.log("pdf created locally");
+
+      await browser.close();
+
+      // const userId = firebase.auth().currentUser.getIdToken(true);
+
+      return bucket.upload(localPDFFile, { destination: `/users/activity.pdf`, metadata: { contentType: 'application/pdf' } })
+        .then(() => {
+          res.type('application/pdf');
+          return res.send(buffer);
+        }).catch(error => {
+          console.error(error);
+          res.send("PDF created and uploaded!");
+        });
+    });
+
+
 
   } catch (e) {
     throw new Error('Cannot create invoice HTML template.');
