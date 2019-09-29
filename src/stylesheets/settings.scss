@@ -42,10 +42,13 @@
   border: 1px solid #b9c6d4;
   resize: none;
   overflow: hidden;
-  padding: 8px 12px;
   line-height: 2;
   transition: border-color .2s;
   font-size: 0.9rem;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 20px 0 40px;
 }
 
 @media only screen and (max-width: 600px) {

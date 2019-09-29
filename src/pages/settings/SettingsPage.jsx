@@ -15,6 +15,7 @@ import ColorPicker from '../../components/invoices/ColorPicker';
 import Content from '../../components/content/Content';
 import LogoUploader from 'components/settings/LogoUploader';
 import SectionTitle from '../../components/content/SectionTitle';
+import Switch from '../../components/form/Switch';
 import * as UserActions from '../../redux/actions/user';
 
 import '../../stylesheets/settings.scss';
@@ -57,6 +58,18 @@ class SettingsPage extends Component {
       defaultColor: color,
     });
   };
+
+  handleInvoiceInfoChange = (field, value) => {
+    const { currentUser, saveUserSettings } = this.props;
+
+    saveUserSettings({
+      ...currentUser.settings,
+      invoice: {
+        ...currentUser.settings.invoice,
+        [field]: value,
+      },
+    });
+  }
 
   render() {
     const { currentUser, t } = this.props;
@@ -107,6 +120,28 @@ class SettingsPage extends Component {
               </div>
 
               <div className="settingsItem">
+                <div className="settingsItemLeft">TVA</div>
+
+                <div className="SettingsItemRight">
+                  <div className="settingItemDescription">
+                    Êtes-vous assujetti à la tva ?
+                  </div>
+
+                  {/* <Switch /> */}
+                </div>
+              </div>
+            </>
+          </CardContent>
+        </Card>
+
+        <CardHeader
+          subheader="Mes factures"
+        />
+
+        <Card>
+          <CardContent style={{ padding: 0 }}>
+            <>
+              <div className="settingsItem">
                 <div className="settingsItemLeft">Informations emetteur</div>
 
                 {/* <textarea className="emitterInfo" value={settings.emitterInfo} onChange={this.handleEmitterInfoChange} /> */}
@@ -140,6 +175,71 @@ class SettingsPage extends Component {
                     onChange={this.handleDefaultColorChange}
                   />
                 </div>
+              </div>
+
+              <div className="settingsItem">
+                <div className="settingsItemLeft">Délai de paiement</div>
+
+                <div className="SettingsItemRight">
+                  <div className="settingItemDescription">
+                    Délai de règlement par défaut
+                  </div>
+                </div>
+              </div>
+
+              <div className="settingsItem">
+                <div className="settingsItemLeft">Mentions</div>
+
+                <div className="SettingsItemRight">
+                  <div className="settingItemDescription">
+                    Ces informations sont visibles parmi les mentions affichées sur vos factures
+                  </div>
+
+                  <div className="settingItemDescription">
+                    Coordonnées bancaires
+                  </div>
+                  <ContentEditable
+                    placeholder="Coordonnées bancaires"
+                    html={settings.invoice ? settings.invoice.bankInfo : null} // innerHTML of the editable div
+                    disabled={false}       // use true to disable editing
+                    onChange={(e) => this.handleInvoiceInfoChange('bankInfo', e.target.value)} // handle innerHTML change
+                    className="emitterInfo"
+                  />
+
+                  <div className="settingItemDescription">
+                    Retard de paiement
+                  </div>
+                  <ContentEditable
+                    placeholder="Coordonnées bancaires"
+                    html={settings.invoice ? (settings.invoice.overdue || null) : null} // innerHTML of the editable div
+                    disabled={false}       // use true to disable editing
+                    onChange={(e) => this.handleInvoiceInfoChange('overdue', e.target.value)} // handle innerHTML change
+                    className="emitterInfo"
+                  />
+
+                  <div className="settingItemDescription">
+                    Inscription au registre du commerce et des sociétés (RCS)
+                  </div>
+                  <ContentEditable
+                    placeholder="Coordonnées bancaires"
+                    html={settings.invoice ? (settings.invoice.rcs || null) : null} // innerHTML of the editable div
+                    disabled={false}       // use true to disable editing
+                    onChange={(e) => this.handleInvoiceInfoChange('rcs', e.target.value)} // handle innerHTML change
+                    className="emitterInfo"
+                  />
+
+                  <div className="settingItemDescription">
+                    Pieds de page
+                  </div>
+                  <ContentEditable
+                    placeholder="Coordonnées bancaires"
+                    html={settings.invoice ? (settings.invoice.footer || null) : null} // innerHTML of the editable div
+                    disabled={false}       // use true to disable editing
+                    onChange={(e) => this.handleInvoiceInfoChange('footer', e.target.value)} // handle innerHTML change
+                    className="emitterInfo"
+                  />
+                </div>
+
               </div>
 
             </>
