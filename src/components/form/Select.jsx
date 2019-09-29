@@ -5,34 +5,77 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  // makeStyles,
+  Select as SelectMui,
+  makeStyles,
 } from '@material-ui/core';
 
-/* const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   formControl: {
-
+    margin: theme.spacing(1),
+    minWidth: 220,
   },
-})); */
+}));
 
-class Select extends React.Component {
+const Select = ({ label, name, value, onChange, options, placeholder }) => {
+  const classes = useStyles();
+  const inputLabel = React.useRef(null);
 
-  render() {
-    return (
-      <FormControl variant="outlined">
-        <InputLabel htmlFor="outlined-age-simple">
-          Age
+  const [labelWidth, setLabelWidth] = React.useState(0);
+  React.useEffect(() => {
+    setLabelWidth(inputLabel.current.offsetWidth);
+  }, []);
+
+  const generatedId = new Date().getTime();
+
+  return (
+    <FormControl variant="outlined" className={classes.formControl}>
+      <InputLabel ref={inputLabel} htmlFor={`select-${generatedId}`}>
+        {label}
         </InputLabel>
-        <Select
-          value={10}
-        >
-          <option value="" />
-          <option value={10}>Ten</option>
-          <option value={20}>Twenty</option>
-          <option value={30}>Thirty</option>
-        </Select>
-      </FormControl>
-    )
-  }
+      <SelectMui
+        value={value}
+        onChange={onChange}
+        labelWidth={labelWidth}
+        inputProps={{
+          name,
+          id: `select-${generatedId}`,
+        }}
+      >
+        {placeholder && (
+          <MenuItem value={null}>
+            <em>{placeholder}</em>
+          </MenuItem>
+        )}
+
+        {options.map((option, index) => (
+          <MenuItem
+            key={index}
+            value={option.value}
+          >
+            {option.label}
+          </MenuItem>
+        ))}
+
+      </SelectMui>
+    </FormControl>
+  )
 }
+
+Select.propTypes = {
+  label: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.any,
+  onChange: PropTypes.func.isRequired,
+  options: PropTypes.array,
+  placeholder: PropTypes.string,
+};
+
+Select.defaultProps = {
+  label: null,
+  name: '',
+  options: [],
+  placeholder: null,
+  value: null,
+};
 
 export default Select;

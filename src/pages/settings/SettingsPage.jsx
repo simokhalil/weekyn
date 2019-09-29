@@ -19,6 +19,8 @@ import Switch from '../../components/form/Switch';
 import * as UserActions from '../../redux/actions/user';
 
 import '../../stylesheets/settings.scss';
+import Select from 'components/form/Select';
+import AppConstants from 'AppConstants';
 
 class SettingsPage extends Component {
   state = {
@@ -41,12 +43,12 @@ class SettingsPage extends Component {
     });
   };
 
-  handleEmitterInfoChange = (e) => {
+  handleGeneralInfoChange = (field, value) => {
     const { currentUser, saveUserSettings } = this.props;
 
     saveUserSettings({
       ...currentUser.settings,
-      emitterInfo: e.target.value,
+      [field]: value,
     });
   };
 
@@ -127,7 +129,11 @@ class SettingsPage extends Component {
                     Êtes-vous assujetti à la tva ?
                   </div>
 
-                  {/* <Switch /> */}
+                  <Switch
+                    label="Je suis assujeti à la TVA"
+                    value={settings.tva}
+                    onChange={(val) => this.handleGeneralInfoChange('tva', val)}
+                  />
                 </div>
               </div>
             </>
@@ -144,8 +150,6 @@ class SettingsPage extends Component {
               <div className="settingsItem">
                 <div className="settingsItemLeft">Informations emetteur</div>
 
-                {/* <textarea className="emitterInfo" value={settings.emitterInfo} onChange={this.handleEmitterInfoChange} /> */}
-
                 <div className="SettingsItemRight">
                   <div className="settingItemDescription">
                     Ces informations sont visibles en haut à gauche des factures
@@ -155,7 +159,7 @@ class SettingsPage extends Component {
                     placeholder="Infos emetteur"
                     html={settings.emitterInfo} // innerHTML of the editable div
                     disabled={false}       // use true to disable editing
-                    onChange={this.handleEmitterInfoChange} // handle innerHTML change
+                    onChange={(e) => this.handleGeneralInfoChange('emitterInfo', e.target.value)} // handle innerHTML change
                     className="emitterInfo"
                     style={{ border: '1px solid #aaa', borderRadius: '5px', padding: '10px' }}
                   />
@@ -184,6 +188,14 @@ class SettingsPage extends Component {
                   <div className="settingItemDescription">
                     Délai de règlement par défaut
                   </div>
+
+                  <Select
+                    label="Délai de paiement"
+                    value={settings.invoice ? (settings.invoice.paymentDelay || null) : null}
+                    options={AppConstants.SETTINGS.INVOICE.paymentDelayOptions}
+                    onChange={(e) => console.log('selected', e)}
+                    placeholder="Délai de paiement"
+                  />
                 </div>
               </div>
 

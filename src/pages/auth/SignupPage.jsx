@@ -27,6 +27,7 @@ const INITIAL_SETTINGS = {
     overdue: 'En cas de retard de paiement, une pénalité de 3 fois le taux d’intérêt légal sera appliquée, à laquelle s’ajoutera une indemnité forfaitaire pour frais de recouvrement de 40€',
     rcs: 'Dispensé d’immatriculation au registre du commerce et des sociétés (RCS)',
     footer: 'SIRET : XXX XXX XXX XXXXX - APE/NAF: X0000',
+    paymentDelay: 30,
   },
 };
 

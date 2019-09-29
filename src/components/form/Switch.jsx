@@ -3,19 +3,22 @@ import React from 'react';
 import {
   FormGroup,
   FormControlLabel,
+  Switch as SwitchMui,
 } from '@material-ui/core';
 
-const Switch = () => {
+const Switch = ({ label, onChange, value }) => {
 
   return (
-    <FormGroup row>
-      <FormControlLabel
-        control={
-          <Switch checked={true} onChange={(e) => console.log('checked', e)} value="checkedA" />
-        }
-        label="Secondary"
-      />
-    </FormGroup>
+    <div>
+      <FormGroup row>
+        <FormControlLabel
+          control={
+            <SwitchMui color="primary" checked={value} onChange={(e, val) => onChange(val)} value="checkedA" />
+          }
+          label={label}
+        />
+      </FormGroup>
+    </div>
   );
 }
 
