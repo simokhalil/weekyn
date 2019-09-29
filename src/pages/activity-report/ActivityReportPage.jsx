@@ -356,7 +356,7 @@ class ActivityReportPage extends React.Component {
               <tr key={projectLineIndex}>
                 <>
                   <td className={classes.tableCol}>
-                    {projectLine.invoices[currentYear] && projectLine.invoices[currentYear][currentMonthIndex]
+                    {projectLine.invoices && projectLine.invoices[currentYear] && projectLine.invoices[currentYear][currentMonthIndex]
                       ? (
                         <Tooltip title="Visualiser la facture">
                           <IconButton aria-label="delete" size="small" style={{ fontSize: '24px'}} onClick={() => this.goToProjectLineInvoice(projectLine.invoices[currentYear][currentMonthIndex])}>
