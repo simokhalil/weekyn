@@ -96,6 +96,7 @@ const INITIAL_INVOICE_LINE = {
   priceExclTax: '',
   tax: 20,
   quantity: '',
+  unit: 'units',
   totalExclTax: 0,
 };
 
@@ -127,6 +128,13 @@ class InvoiceCreatePage extends Component {
         totalInclTax: 0,
         client: { ...INITIAL_INVOICE_CLIENT },
         lines: [{ ...INITIAL_INVOICE_LINE }],
+        withTva: (props.currentUser && props.currentUser.settings && props.currentUser.settings.tva) || true,
+        mentions: {
+          tva: (props.currentUser && props.currentUser.settings && !props.currentUser.settings.tva && 'TVA non applicable, art. 293 B du CGI') || '',
+          overdue: (props.currentUser && props.currentUser.settings && props.currentUser.settings.invoice && props.currentUser.settings.invoice.overdue) || '',
+          rcs: (props.currentUser && props.currentUser.settings && props.currentUser.settings.invoice && props.currentUser.settings.invoice.rcs) || '',
+          footer: (props.currentUser && props.currentUser.settings && props.currentUser.settings.invoice && props.currentUser.settings.invoice.footer) || '',
+        },
       },
       isLoading: true,
     };
@@ -151,7 +159,7 @@ class InvoiceCreatePage extends Component {
   }
 
   getInvoice = async () => {
-    const { currentUser, match} = this.props;
+    const { currentUser, match } = this.props;
 
     const invoiceId = match.params.id;
 
@@ -167,6 +175,7 @@ class InvoiceCreatePage extends Component {
             ...invoiceData.client,
           },
           id: invoiceId,
+          mentions: invoiceData.mentions || {},
         },
         isLoading: false,
       }, () => {
@@ -192,6 +201,11 @@ class InvoiceCreatePage extends Component {
 
     invoice.emitterInfos = settings.emitterInfo;
     invoice.color = invoice.color || settings.defaultColor;
+    invoice.withTva = settings.tva;
+    invoice.mentions.tva = !settings.tva && 'TVA non applicable, art. 293 B du CGI';
+    invoice.mentions.overdue = invoice.mentions.overdue || settings.invoice.overdue;
+    invoice.mentions.rcs = invoice.mentions.rcs || settings.invoice.rcs;
+    invoice.mentions.footer = invoice.mentions.footer || settings.invoice.footer;
 
     this.setState({ invoice });
 
@@ -210,6 +224,12 @@ class InvoiceCreatePage extends Component {
   handleClientInputChange = (field, value) => {
     const { invoice } = this.state;
     invoice.client[field] = value;
+    this.setState({ invoice });
+  };
+
+  handleInvoiceMentionsChange = (field, value) => {
+    const { invoice } = this.state;
+    invoice.mentions[field] = value;
     this.setState({ invoice });
   };
 
@@ -430,7 +450,10 @@ class InvoiceCreatePage extends Component {
                       <StyledTableCell className="description" style={{ backgroundColor: invoice.color}}>Description</StyledTableCell>
                       <StyledTableCell align="center" style={{ backgroundColor: invoice.color}}>Quantité</StyledTableCell>
                       <StyledTableCell align="center" style={{ backgroundColor: invoice.color}}>Prix unitaire</StyledTableCell>
-                      <StyledTableCell align="center" style={{ backgroundColor: invoice.color}}>TVA</StyledTableCell>
+                      <StyledTableCell align="center" style={{ backgroundColor: invoice.color}}>Unité</StyledTableCell>
+                      {invoice.withTva && (
+                        <StyledTableCell align="center" style={{ backgroundColor: invoice.color }}>TVA</StyledTableCell>
+                      )}
                       <StyledTableCell align="center" style={{ backgroundColor: invoice.color}}>Prix HT</StyledTableCell>
                     </TableRow>
                   </TableHead>
@@ -469,21 +492,41 @@ class InvoiceCreatePage extends Component {
                           <FormControl className={classes.formControl}>
                             <NativeSelect
                               className={classes.selectEmpty}
-                              value={line.tax}
-                              name="age"
-                              onChange={(e) => this.handleInvoiceLineChange(lineIndex, 'tax', e.target.value)}
-                              inputProps={{ 'aria-label': 'TVA' }}
+                              value={line.unit}
+                              name="unit"
+                              onChange={(e) => this.handleInvoiceLineChange(lineIndex, 'unit', e.target.value)}
+                              inputProps={{ 'aria-label': 'Unité' }}
                               input={<InputBase className="fakeInput" />}
                             >
-                              <option value="" disabled>
-                                TVA
-                              </option>
-                              <option value={0}>0%</option>
-                              <option value={10}>10%</option>
-                              <option value={20}>20%</option>
+                              <option value="units">Unités</option>
+                              <option value="hours">heures</option>
+                              <option value="days">jours</option>
+                              <option value="weeks">semaines</option>
+                              <option value="months">mois</option>
                             </NativeSelect>
                           </FormControl>
                         </StyledTableCell>
+                        {invoice.withTva && (
+                          <StyledTableCell align="right">
+                            <FormControl className={classes.formControl}>
+                              <NativeSelect
+                                className={classes.selectEmpty}
+                                value={line.tax}
+                                name="age"
+                                onChange={(e) => this.handleInvoiceLineChange(lineIndex, 'tax', e.target.value)}
+                                inputProps={{ 'aria-label': 'TVA' }}
+                                input={<InputBase className="fakeInput" />}
+                              >
+                                <option value="" disabled>
+                                  TVA
+                                </option>
+                                <option value={0}>0%</option>
+                                <option value={10}>10%</option>
+                                <option value={20}>20%</option>
+                              </NativeSelect>
+                            </FormControl>
+                          </StyledTableCell>
+                        )}
                         <StyledTableCell align="right">
                           {line.totalExclTax}
 
@@ -522,6 +565,40 @@ class InvoiceCreatePage extends Component {
                     <span className="total amount">{invoice.totalInclTax.toFixed(2)}</span>
                   </div>
                 </div>
+              </div>
+
+              <div className="invoiceEditorBody">
+                {!invoice.withTva && (
+                  <input
+                    className="mention tva fakeInput"
+                    disabled
+                    value={invoice.mentions.tva}
+                  />
+                )}
+
+                <textarea
+                  className="mention fakeInput"
+                  placeholder="Intitulé de la facture"
+                  value={invoice.mentions.overdue}
+                  onChange={(e) => this.handleInvoiceMentionsChange('overdue', e.target.value)}
+                />
+
+                <textarea
+                  className="mention fakeInput"
+                  placeholder="Inscription au RCS"
+                  value={invoice.mentions.rcs}
+                  onChange={(e) => this.handleInvoiceMentionsChange('rcs', e.target.value)}
+                />
+
+              </div>
+
+              <div className="invoiceFooter">
+                <textarea
+                  className="mention fakeInput"
+                  placeholder="Pied de page"
+                  value={invoice.mentions.footer}
+                  onChange={(e) => this.handleInvoiceMentionsChange('footer', e.target.value)}
+                />
               </div>
             </div>
           </PdfContainer>

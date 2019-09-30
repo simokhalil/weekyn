@@ -1,4 +1,6 @@
 #invoice {
+  position: relative;
+
   input, textarea {
     outline: 0;
   }
@@ -179,6 +181,17 @@
         cursor: pointer;
       }
     }
+
+    .mention {
+      flex: 1;
+      line-height: 20px;
+      margin: 0 0 10px;
+
+      &.tva {
+        margin: 30px 0;
+        text-align: right;
+      }
+    }
   }
 
   .invoiceLines {
@@ -205,6 +218,19 @@
         font-weight: 600;
         font-size: 1.2rem;
       }
+    }
+  }
+
+  .invoiceFooter {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    text-align: center;
+
+    textarea {
+      width: 100%;
+      text-align: center;
     }
   }
 }
